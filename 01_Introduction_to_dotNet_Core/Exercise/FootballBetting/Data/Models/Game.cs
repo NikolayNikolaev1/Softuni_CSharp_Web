@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace FootballBetting.Data.Models
+{
+    public class Game
+    {
+        public int Id { get; set; }
+
+        public string HomeTeam { get; set; }
+
+        public string AwayTeam { get; set; }
+
+        public string HomeGoals { get; set; }
+
+        public string AwayGoals { get; set; }
+
+        public DateTime DateTime { get; set; }
+
+        public int HomeTeamWinBetRate { get; set; }
+
+        public int AwayTeamWinBetRate { get; set; }
+
+        public int DrawBetRate { get; set; }
+
+        public int RoundId { get; set; }
+
+        public Round Round { get; set; }
+
+        public int CompetitionId { get; set; }
+
+        public Competition Competition { get; set; }
+
+        public List<PlayerStatistic> PlayerStatistics { get; set; } = new List<PlayerStatistic>();
+
+        public List<GameBet> Bets { get; set; } = new List<GameBet>();
+    }
+}

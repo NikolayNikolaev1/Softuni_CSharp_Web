@@ -13,6 +13,8 @@
 
         public DbSet<Homework> Homeworks { get; set; }
 
+        public DbSet<License> Licenses { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=StudentSystemDb;Integrated Security=True;");
@@ -55,6 +57,12 @@
                 .HasOne(h => h.Student)
                 .WithMany(s => s.Homeworks)
                 .HasForeignKey(h => h.StudentId);
+
+            modelBuilder
+                .Entity<License>()
+                .HasOne(l => l.Resource)
+                .WithMany(r => r.Licenses)
+                .HasForeignKey(l => l.ResourceId);
 
             base.OnModelCreating(modelBuilder);
         }

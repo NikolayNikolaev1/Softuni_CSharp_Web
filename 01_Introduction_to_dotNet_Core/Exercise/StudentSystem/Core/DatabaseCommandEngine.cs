@@ -1,5 +1,6 @@
 ﻿namespace StudentSystem.Core
 {
+    using Microsoft.EntityFrameworkCore;
     using StudentSystem.Database;
     using StudentSystem.Enums;
     using StudentSystem.Models;
@@ -54,7 +55,7 @@
                     Price = 100 * i,
                     StartDate = currentDate.AddDays(i),
                     EndDate = currentDate.AddDays(i + 20)
-                }; 
+                };
 
                 addedCourses.Add(course);
                 this.DbContext.Add(course);
@@ -135,5 +136,50 @@
             }
 
         }
+
+        public Student[] GetAllStudentsAndHomeworks()
+        {
+            return this.DbContext
+               .Students
+               .Include(s => s.Homeworks)
+               .ToArray();
+        }
+
+        public Course[] GetAllCoursesAndResources()
+        {
+            return this.DbContext
+                .Courses
+                .Include(c => c.Resources)
+                .ToArray();
+        }
+
+        public Course[] GetAllCoursesWithStudents()
+        {
+            return this.DbContext
+                .Courses
+                .Include(c => c.Studens)
+                .ToArray();
+        }
+
+        public void PrintAllStudentsWithCourses()
+        {
+            //todo
+            var result =  this.dbContext
+                .Students
+                .Select(s => new
+                {
+                    s.Name,
+                    CoursesCount = s.Courses.Count,
+                    TotalPrice = s.Courses.Sum(c => c.Course.Price),
+                    AveragePrice = s.Courses.Average(c => c.Course.Price)
+                });
+
+            foreach (var student in result)
+            {
+                Console.WriteLine($"{student.Name} - {student.CoursesCount} courses, total price: {student.TotalPrice}, avg price: {student.AveragePrice}");
+            }
+        }
+
+        
     }
 }
