@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Beer Store</title>
+    <link href="/Style/style.css" rel="stylesheet" />
+</head>
+<body>
+    <nav>
+        <div class="topnav">
+            <a class="logo" href="index.html"><img src="/Images/logo.png" alt="Beer Store" /></a>
+            <a href="index.html">Home</a>
+            <a href="all-beers">See All Beers</a>
+            <a class="active" href="order.html">Order a Beer</a>
+            <a class="right" href="register.html">Register</a>
+            <a class="right" href="login.html">Log in</a>
+        </div>
+    </nav>
+
+    <main>
+        <form action="/" method="post">
+            <label>Brand</label>
+            <select>
+                <option selected disabled>Select Brand</option>
+                <option>Corona Extra 330ml</option>
+                <option>Stella Artois 500ml</option>
+                <option>Carlsberg 330ml</option>
+                <option>Heineken 330ml</option>
+            </select>
+            <label>Quantity</label>
+            <input type="number" min="1" max="15" placeholder="Enter amount of beers (1-15)" />
+            <label>Destination</label>
+            <select>
+                <option selected disabled>Select a destination</option>
+                <option>America</option>
+                <option>Bulgaria</option>
+                <option>Canada</option>
+                <option>Denmark</option>
+                <option>France</option>
+                <option>Germany</option>
+                <option>Hungary</option>
+                <option>Italy</option>
+                <option>Japan</option>
+            </select>
+            <label>Enter your birthdate</label>
+            <input type="date" />
+            <label>Got an opinion, comment, recommendation? Share it with us!</label>
+            <input type="" placeholder="Share your opinion with us!"/>
+        </form>
+
+    </main>
+
+    <footer>
+        <hr />
+        <p><em>&copy; 2021 &ndash; Beer Store</em></p>
+    </footer>
+</body>
+</html>
