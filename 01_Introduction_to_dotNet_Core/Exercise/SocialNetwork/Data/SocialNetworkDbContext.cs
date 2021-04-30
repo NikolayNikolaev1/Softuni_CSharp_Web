@@ -14,9 +14,13 @@
 
         public DbSet<Friendship> Friendships { get; set; }
 
+        public DbSet<Picture> Pictures { get; set; }
+
+        public DbSet<Album> Albums { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=StudentSystemDb;Integrated Security=True;");
+            optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=SocialNetworkDb;Integrated Security=True;");
 
             base.OnConfiguring(optionsBuilder);
         }
@@ -40,6 +44,28 @@
                 .WithOne(f => f.ToUser)
                 .HasForeignKey(f => f.ToUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<PictureAlbum>()
+                .HasKey(pa => new { pa.PictureId, pa.AlbumId });
+
+            modelBuilder
+                .Entity<Picture>()
+                .HasMany(p => p.Albums)
+                .WithOne(a => a.Picture)
+                .HasForeignKey(a => a.PictureId);
+
+            modelBuilder
+                .Entity<Album>()
+                .HasMany(a => a.Pictures)
+                .WithOne(p => p.Album)
+                .HasForeignKey(p => p.AlbumId);
+
+            modelBuilder
+                .Entity<Album>()
+                .HasOne(a => a.Owner)
+                .WithMany(u => u.Albums)
+                .HasForeignKey(a => a.OwnerId);
 
             base.OnModelCreating(modelBuilder);
         }

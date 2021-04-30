@@ -40,5 +40,7 @@
 
         public List<Friendship> ToFriends { get; set; } = new List<Friendship>();
 
+        public List<Album> Albums { get; set; } = new List<Album>();
+
     }
 }
