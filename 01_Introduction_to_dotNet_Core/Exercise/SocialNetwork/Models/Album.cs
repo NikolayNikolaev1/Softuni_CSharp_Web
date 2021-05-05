@@ -20,5 +20,7 @@
         public User Owner { get; set; }
 
         public List<PictureAlbum> Pictures { get; set; } = new List<PictureAlbum>();
+
+        public List<AlbumTag> Tags { get; set; } = new List<AlbumTag>();
     }
 }

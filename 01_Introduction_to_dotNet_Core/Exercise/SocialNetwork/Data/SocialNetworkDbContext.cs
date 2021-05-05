@@ -18,6 +18,8 @@
 
         public DbSet<Album> Albums { get; set; }
 
+        public DbSet<Tag> Tags { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=SocialNetworkDb;Integrated Security=True;");
@@ -66,6 +68,22 @@
                 .HasOne(a => a.Owner)
                 .WithMany(u => u.Albums)
                 .HasForeignKey(a => a.OwnerId);
+
+            modelBuilder
+                .Entity<AlbumTag>()
+                .HasKey(at => new { at.AlbumId, at.TagId });
+
+            modelBuilder
+                .Entity<Album>()
+                .HasMany(a => a.Tags)
+                .WithOne(t => t.Album)
+                .HasForeignKey(t => t.AlbumId);
+
+            modelBuilder
+                .Entity<Tag>()
+                .HasMany(t => t.Albums)
+                .WithOne(a => a.Tag)
+                .HasForeignKey(a => a.TagId);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -17,7 +17,11 @@
                 dbContext.Database.Migrate();
 
                 SeedUsersWithFriendships(dbContext);
-                SeedAlbumsWithPictures(dbContext);
+                //SeedAlbumsWithPictures(dbContext);
+                //PrintOwnerAlbumsWithPictureCount(dbContext);
+                //PrintPicturesInMoreThanTwoAlbums(dbContext);
+                int userId = int.Parse(Console.ReadLine());
+                PrintAlbumsForUserById(dbContext, userId);
             }
         }
 
@@ -248,6 +252,91 @@
                 Console.WriteLine($"User: {user.Name}");
                 Console.WriteLine($"{user.FriendsCount} Friends");
                 Console.WriteLine($"{user.DaysRegistered} Days");
+            }
+        }
+
+        private static void PrintOwnerAlbumsWithPictureCount(SocialNetworkDbContext db)
+        {
+            var albums = db
+                .Albums
+                .Select(a => new
+                {
+                    AlbumTitle = a.Name,
+                    OwnerName = a.Owner.Username,
+                    PicturesCount = a.Pictures.Count
+                })
+                .OrderByDescending(a => a.PicturesCount)
+                .ThenBy(a => a.OwnerName);
+
+            foreach (var album in albums)
+            {
+                Console.WriteLine($"Album - {album.AlbumTitle}");
+                Console.WriteLine($"Owner - {album.OwnerName}");
+                Console.WriteLine($"Number of Pictures: {album.PicturesCount}");
+            }
+        }
+
+        private static void PrintPicturesInMoreThanTwoAlbums(SocialNetworkDbContext db)
+        {
+            var pictures = db
+                .Pictures
+                .Where(p => p.Albums.Count > 2)
+                .Select(p => new
+                {
+                    Title = p.Title,
+                    Albums = p.Albums.Select(a => a.Album.Name),
+                    OwnerName = p.Albums.Select(a => a.Album.Owner.Username)
+                })
+                .OrderByDescending(p => p.Albums.Count())
+                .ThenBy(p => p.Title)
+                .ToList();
+
+            foreach (var picture in pictures)
+            {
+                Console.WriteLine($"Picture: {picture.Title}");
+
+                foreach (var album in picture.Albums)
+                {
+                    Console.WriteLine($"Album: {album}");
+                }
+
+                foreach (var owner in picture.OwnerName)
+                {
+                    Console.WriteLine($"Owner: {owner}");
+                }
+            }
+        }
+
+        private static void PrintAlbumsForUserById(SocialNetworkDbContext db, int userId)
+        {
+            var albums = db
+                .Albums
+                .Where(a => a.OwnerId == userId)
+                .Select(a => new
+                {
+                    Name = a.Name,
+                    IsPublic = a.IsPublic,
+                    Pictures = a.Pictures.Select(p => p.Picture)
+                })
+                .OrderBy(a => a.Name)
+                .ToList();
+
+            foreach (var album in albums)
+            {
+                Console.WriteLine($"Album: {album.Name}");
+
+                if (album.IsPublic)
+                {
+                    foreach (var picture in album.Pictures)
+                    {
+                        Console.WriteLine($"Picture Title: {picture.Title}");
+                        Console.WriteLine($"Picture Path {picture.Path}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Private content!");
+                }
             }
         }
     }
