@@ -33,7 +33,7 @@
                 for (int i = 0; i < totalUsers; i++)
                 {
 
-                    bool isDeleted;   
+                    bool isDeleted;
                     if (i % 2 == 0)
                     {
                         isDeleted = true;
@@ -122,82 +122,80 @@
 
         private static void SeedAlbumsWithPictures(SocialNetworkDbContext db)
         {
-            var totalAlbums = 5;
-            var totalPictures = 10;
+            const int totalAlbums = 100;
+            const int totalPictures = 500;
             Random random = new Random();
+            var albumList = new List<Album>();
 
-            var users = db
+            var userIds = db
                 .Users
                 .Select(u => u.Id)
                 .ToList();
 
-            foreach (var user in users)
+            for (int i = 0; i < totalAlbums; i++)
             {
-                var albumList = new List<Album>();
-                var pictureLsit = new List<Picture>();
-
-                var albumCount = random.Next(1, totalAlbums);
-
-                for (int i = 0; i < albumCount; i++)
+                var album = new Album
                 {
-                    bool isPublic = false;
-                    if (i % 2 == 0)
-                    {
-                        isPublic = true;
-                    }
-
-                    var album = new Album
-                    {
-                        Name = $"Album {i}",
-                        BackgroundColor = $"Color {i}",
-                        IsPublic = isPublic,
-                        OwnerId = user
-                    };
-
-                    albumList.Add(album);
-                    db.Albums.Add(album);
-                }
-
-                var pictureCount = random.Next(1, totalPictures);
-
-                for (int i = 0; i < pictureCount; i++)
-                {
-                    var picture = new Picture
-                    {
-                        Title = $"Picture {i}",
-                        Caption = $"Caption {i}",
-                        Path = $"Path/{i}"
-                    };
-
-                    pictureLsit.Add(picture);
-                    db.Pictures.Add(picture);
-                }
-
-                var pictureAlbumsCount = random.Next(1, totalAlbums * totalPictures);
-                //todo: fix finish
-                var comboList = new List<(int, int)>();
-                for (int i = 0; i < pictureAlbumsCount; i++)
-                {
-                    var pictureId = random.Next(1, pictureCount + 1);
-                    var albumId = random.Next(1, albumCount + 1);
-
-                    if (comboList.Contains((pictureId, albumId)))
-                    {
-                        continue;
-                    }
-
-                    db.Add(new PictureAlbum
-                    {
-                        PictureId = pictureId,
-                        AlbumId = albumId
-                    });
-
-                    var combo = (pictureId, albumId);
-                    comboList.Add(combo);
-                }
+                    Name = $"Album {i}",
+                    BackgroundColor = $"Color {i}",
+                    IsPublic = random.Next(0, 2) == 0 ? true : false,
+                    OwnerId = userIds[random.Next(0, userIds.Count)]
+                };
+                db.Albums.Add(album);
+                albumList.Add(album);
             }
 
             db.SaveChanges();
+            var pictureList = new List<Picture>();
+
+            for (int i = 0; i < totalPictures; i++)
+            {
+                var picture = new Picture
+                {
+                    Title = $"Picture {i}",
+                    Caption = $"Caption {i}",
+                    Path = $"Path/{i}"
+                };
+
+                pictureList.Add(picture);
+                db.Pictures.Add(picture);
+            }
+
+            db.SaveChanges();
+
+            var albumIds = albumList
+                .Select(a => a.Id)
+                .ToList();
+
+            for (int i = 0; i < pictureList.Count; i++)
+            {
+
+                var picture = pictureList[i];
+                var numberofAlbums = random.Next(1, 20);
+
+                for (int j = 0; j < numberofAlbums; j++)
+                {
+                    var albumId = albumIds[random.Next(0, albumIds.Count)];
+
+                    var pictureExistsInAlbum = db
+                        .Pictures
+                        .Any(p => p.Id == picture.Id && p.Albums.Any(a => a.AlbumId == albumId));
+
+                    if (pictureExistsInAlbum)
+                    {
+                        j--;
+                        continue;
+                    }
+
+                    picture.Albums.Add(new PictureAlbum
+                    {
+                        AlbumId = albumId
+                    });
+
+                    db.SaveChanges();
+                }
+            }
+
 
         }
 
