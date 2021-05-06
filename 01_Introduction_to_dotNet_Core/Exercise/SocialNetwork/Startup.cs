@@ -339,5 +339,10 @@
                 }
             }
         }
+
+        private static void SeedTags(SocialNetworkDbContext db)
+        {
+
+        }
     }
 }

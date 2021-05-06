@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FootballBetting.Data.Models
+﻿namespace FootballBetting.Data.Models
 {
+    using System;
+    using System.Collections.Generic;
+
     public class Game
     {
         public int Id { get; set; }

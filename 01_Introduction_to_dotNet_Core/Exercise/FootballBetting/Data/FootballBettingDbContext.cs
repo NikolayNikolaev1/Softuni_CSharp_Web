@@ -1,11 +1,8 @@
-﻿using FootballBetting.Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FootballBetting.Data
+﻿namespace FootballBetting.Data
 {
+    using FootballBetting.Data.Models;
+    using Microsoft.EntityFrameworkCore;
+
     public class FootballBettingDbContext : DbContext
     {
         public DbSet<Team> Teams { get; set; }
@@ -32,6 +29,12 @@ namespace FootballBetting.Data
 
         public DbSet<Bet> Bets { get; set; }
 
+        public DbSet<GameBet> GameBets { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<ResultPrediction> ResultPredictions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=FootballBettingDatabase;Integrated Security=True;");
@@ -44,14 +47,16 @@ namespace FootballBetting.Data
             modelBuilder
                 .Entity<Team>()
                 .HasOne(t => t.PrimaryKitColor)
-                .WithMany(c => c.Teams)
-                .HasForeignKey(t => t.PrimaryKitColorId);
+                .WithMany(c => c.PrimaryColorTeams)
+                .HasForeignKey(t => t.PrimaryKitColorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder
                 .Entity<Team>()
                 .HasOne(t => t.SecondaryKitColor)
-                .WithMany(c => c.Teams)
-                .HasForeignKey(t => t.SecondaryKitColorId);
+                .WithMany(c => c.SecondaryColorTeams)
+                .HasForeignKey(t => t.SecondaryKitColorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder
                 .Entity<Team>()
@@ -136,6 +141,18 @@ namespace FootballBetting.Data
                 .HasMany(b => b.Games)
                 .WithOne(g => g.Bet)
                 .HasForeignKey(g => g.BetId);
+
+            modelBuilder
+                .Entity<ResultPrediction>()
+                .HasMany(rp => rp.GameBets)
+                .WithOne(gb => gb.ResultPrediction)
+                .HasForeignKey(gb => gb.ResultPredictionId);
+
+            modelBuilder
+                .Entity<User>()
+                .HasMany(u => u.Bets)
+                .WithOne(b => b.User)
+                .HasForeignKey(b => b.UserId); 
 
             base.OnModelCreating(modelBuilder);
         }

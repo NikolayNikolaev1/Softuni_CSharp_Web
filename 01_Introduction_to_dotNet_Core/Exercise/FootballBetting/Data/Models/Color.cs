@@ -10,6 +10,8 @@
         [Required]
         public string Name { get; set; }
 
-        public List<Team> Teams { get; set; } = new List<Team>();
+        public List<Team> PrimaryColorTeams { get; set; } = new List<Team>();
+
+        public List<Team> SecondaryColorTeams { get; set; } = new List<Team>();
     }
 }

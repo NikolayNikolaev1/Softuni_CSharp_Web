@@ -2,7 +2,7 @@
 {
     public class CountryContinent
     {
-        public int CountryId { get; set; }
+        public string CountryId { get; set; }
 
         public Country Country { get; set; }
 
