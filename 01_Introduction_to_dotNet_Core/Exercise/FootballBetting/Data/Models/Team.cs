@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Team
     {
@@ -30,5 +31,11 @@
         public decimal Budget { get; set; }
 
         public List<Player> Players { get; set; } = new List<Player>();
+
+        [InverseProperty("HomeTeam")]
+        public List<Game> HomeGames { get; set; } = new List<Game>();
+
+        [InverseProperty("AwayTeam")]
+        public List<Game> AwayGames { get; set; } = new List<Game>();
     }
 }

@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Color
     {
@@ -10,8 +11,10 @@
         [Required]
         public string Name { get; set; }
 
+        [InverseProperty("PrimaryKitColor")]
         public List<Team> PrimaryColorTeams { get; set; } = new List<Team>();
 
+        [InverseProperty("SecondaryKitColor")]
         public List<Team> SecondaryColorTeams { get; set; } = new List<Team>();
     }
 }

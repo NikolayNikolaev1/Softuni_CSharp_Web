@@ -4,14 +4,16 @@ using FootballBetting.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FootballBetting.Migrations
 {
     [DbContext(typeof(FootballBettingDbContext))]
-    partial class FootballBettingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210507132136_FixedTeamColorDoubleRelation")]
+    partial class FixedTeamColorDoubleRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,8 +135,8 @@ namespace FootballBetting.Migrations
                     b.Property<string>("AwayGoals")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AwayTeamId")
-                        .HasColumnType("int");
+                    b.Property<string>("AwayTeam")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("AwayTeamWinBetRate")
                         .HasColumnType("int");
@@ -151,8 +153,8 @@ namespace FootballBetting.Migrations
                     b.Property<string>("HomeGoals")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HomeTeamId")
-                        .HasColumnType("int");
+                    b.Property<string>("HomeTeam")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HomeTeamWinBetRate")
                         .HasColumnType("int");
@@ -162,11 +164,7 @@ namespace FootballBetting.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AwayTeamId");
-
                     b.HasIndex("CompetitionId");
-
-                    b.HasIndex("HomeTeamId");
 
                     b.HasIndex("RoundId");
 
@@ -420,22 +418,10 @@ namespace FootballBetting.Migrations
 
             modelBuilder.Entity("FootballBetting.Data.Models.Game", b =>
                 {
-                    b.HasOne("FootballBetting.Data.Models.Team", "AwayTeam")
-                        .WithMany("AwayGames")
-                        .HasForeignKey("AwayTeamId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("FootballBetting.Data.Models.Competition", "Competition")
                         .WithMany("Games")
                         .HasForeignKey("CompetitionId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FootballBetting.Data.Models.Team", "HomeTeam")
-                        .WithMany("HomeGames")
-                        .HasForeignKey("HomeTeamId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FootballBetting.Data.Models.Round", "Round")
@@ -444,11 +430,7 @@ namespace FootballBetting.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AwayTeam");
-
                     b.Navigation("Competition");
-
-                    b.Navigation("HomeTeam");
 
                     b.Navigation("Round");
                 });
@@ -610,10 +592,6 @@ namespace FootballBetting.Migrations
 
             modelBuilder.Entity("FootballBetting.Data.Models.Team", b =>
                 {
-                    b.Navigation("AwayGames");
-
-                    b.Navigation("HomeGames");
-
                     b.Navigation("Players");
                 });
 

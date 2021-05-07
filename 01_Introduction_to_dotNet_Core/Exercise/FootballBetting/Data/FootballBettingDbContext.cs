@@ -2,6 +2,7 @@
 {
     using FootballBetting.Data.Models;
     using Microsoft.EntityFrameworkCore;
+    using System.Reflection;
 
     public class FootballBettingDbContext : DbContext
     {
@@ -43,118 +44,6 @@
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder
-                .Entity<Team>()
-                .HasOne(t => t.PrimaryKitColor)
-                .WithMany(c => c.PrimaryColorTeams)
-                .HasForeignKey(t => t.PrimaryKitColorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder
-                .Entity<Team>()
-                .HasOne(t => t.SecondaryKitColor)
-                .WithMany(c => c.SecondaryColorTeams)
-                .HasForeignKey(t => t.SecondaryKitColorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder
-                .Entity<Team>()
-                .HasOne(tm => tm.Town)
-                .WithMany(tn => tn.Teams)
-                .HasForeignKey(tm => tm.TownId);
-
-            modelBuilder
-                .Entity<Town>()
-                .HasOne(t => t.Country)
-                .WithMany(c => c.Towns)
-                .HasForeignKey(t => t.CountryId);
-
-            modelBuilder
-                .Entity<CountryContinent>()
-                .HasKey(cc => new { cc.CountryId, cc.ContinentId });
-
-            modelBuilder
-                .Entity<Country>()
-                .HasMany(c => c.Continents)
-                .WithOne(cc => cc.Country)
-                .HasForeignKey(cc => cc.CountryId);
-
-            modelBuilder
-                .Entity<Continent>()
-                .HasMany(c => c.Countries)
-                .WithOne(cc => cc.Continent)
-                .HasForeignKey(cc => cc.ContinentId);
-
-            modelBuilder
-                .Entity<Player>()
-                .HasOne(p => p.Team)
-                .WithMany(t => t.Players)
-                .HasForeignKey(p => p.TeamId);
-
-            modelBuilder
-                .Entity<Player>()
-                .HasOne(pl => pl.Position)
-                .WithMany(p => p.Players)
-                .HasForeignKey(pl => pl.PositionId);
-
-            modelBuilder
-                .Entity<PlayerStatistic>()
-                .HasKey(ps => new { ps.PlayerId, ps.GameId });
-
-            modelBuilder
-                .Entity<Player>()
-                .HasMany(p => p.PlayerStatistics)
-                .WithOne(ps => ps.Player)
-                .HasForeignKey(ps => ps.PlayerId);
-
-            modelBuilder
-                .Entity<Game>()
-                .HasMany(g => g.PlayerStatistics)
-                .WithOne(ps => ps.Game)
-                .HasForeignKey(ps => ps.GameId);
-
-            modelBuilder
-                .Entity<Game>()
-                .HasOne(g => g.Round)
-                .WithMany(r => r.Games)
-                .HasForeignKey(g => g.RoundId);
-
-            modelBuilder
-                .Entity<Game>()
-                .HasOne(g => g.Competition)
-                .WithMany(c => c.Games)
-                .HasForeignKey(g => g.CompetitionId);
-
-            modelBuilder
-                .Entity<GameBet>()
-                .HasKey(gb => new { gb.GameId, gb.BetId });
-
-            modelBuilder
-                .Entity<Game>()
-                .HasMany(g => g.Bets)
-                .WithOne(b => b.Game)
-                .HasForeignKey(b => b.GameId);
-
-            modelBuilder
-                .Entity<Bet>()
-                .HasMany(b => b.Games)
-                .WithOne(g => g.Bet)
-                .HasForeignKey(g => g.BetId);
-
-            modelBuilder
-                .Entity<ResultPrediction>()
-                .HasMany(rp => rp.GameBets)
-                .WithOne(gb => gb.ResultPrediction)
-                .HasForeignKey(gb => gb.ResultPredictionId);
-
-            modelBuilder
-                .Entity<User>()
-                .HasMany(u => u.Bets)
-                .WithOne(b => b.User)
-                .HasForeignKey(b => b.UserId); 
-
-            base.OnModelCreating(modelBuilder);
-        }
+            => modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
