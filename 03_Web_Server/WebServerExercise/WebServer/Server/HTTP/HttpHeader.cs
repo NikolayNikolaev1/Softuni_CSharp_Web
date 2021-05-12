@@ -1,6 +1,8 @@
 ﻿namespace WebServer.Server.HTTP
 {
-    public class HttpHeader
+    using WebServer.Server.HTTP.Contracts;
+
+    public class HttpHeader : IHttpHeader
     {
         private string key;
         private string value;

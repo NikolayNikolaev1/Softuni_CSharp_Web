@@ -6,26 +6,33 @@
 
     public class HttpHeaderCollection : IHttpHeaderCollection
     {
-        private readonly IDictionary<string, HttpHeader> headers;
+        private readonly IDictionary<string, IHttpHeader> headers;
 
         public HttpHeaderCollection()
         {
-            this.headers = new Dictionary<string, HttpHeader>();
+            this.headers = new Dictionary<string, IHttpHeader>();
         }
 
-        public void Add(HttpHeader header)
-        {
-            throw new NotImplementedException();
-        }
+        public void Add(IHttpHeader header) => this.headers.Add(header.Key, header);
 
         public bool ContainsKey(string key)
         {
-            throw new NotImplementedException();
+            if (this.headers.ContainsKey(key))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public HttpHeader GetHeader(string key)
+        public IHttpHeader GetHeader(string key)
         {
-            throw new NotImplementedException();
+            if (this.ContainsKey(key))
+            {
+                return this.headers[key];
+            }
+
+            return null;
         }
 
         public override string ToString()

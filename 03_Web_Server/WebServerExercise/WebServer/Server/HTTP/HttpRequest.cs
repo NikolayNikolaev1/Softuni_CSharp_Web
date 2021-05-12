@@ -3,13 +3,12 @@
     using Exceptions;
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using WebServer.Server.Enums;
     using WebServer.Server.HTTP.Contracts;
 
     using static Exceptions.ErrorMessages.BadRequestException;
     using static Constants;
-    using System.Reflection;
-    using System.Linq;
 
     public class HttpRequest : IHttpRequest
     {
@@ -43,38 +42,89 @@
                 .Trim()
                 .Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (requestLine.Length != HttpLength || requestLine[2].ToLower() != HttpVersion)
+            if (requestLine.Length != HttpRequestLength
+                || requestLine[2].ToLower() != Constants.HttpVersion)
             {
                 throw new BadRequestException(InvalidRequestLine);
             }
 
             this.RequestMethod = this.ParseRequestMethod(requestLine[0].ToUpper());
+            this.Url = requestLine[1];
+            this.Path = this.Url
+                .Split(new[] { '?', '#' }, StringSplitOptions.RemoveEmptyEntries)[0];
+
+            this.ParseHeaders(requestLines);
+            this.ParseParameters();
+
+            if (this.RequestMethod == HttpRequestMethod.POST)
+            {
+                this.ParseQuery(requestLines[requestLines.Length - 1], this.FormData);
+            }
         }
 
-        private void ParseHeaders(string headers)
+        private void ParseHeaders(string[] requestLines)
         {
-            throw new NotImplementedException();
+            int endIndex = Array.IndexOf(requestLines, string.Empty);
+
+            for (int i = 0; i < endIndex; i++)
+            {
+                string[] headerArgs = requestLines[i]
+                    .Split(new[] { ": " }, StringSplitOptions.None);
+
+                IHttpHeader header = new HttpHeader(headerArgs[0], headerArgs[1]);
+                this.HeaderCollection.Add(header);
+            }
+
+            if (!this.HeaderCollection.ContainsKey(HttpHostHeader))
+            {
+                throw new BadRequestException(MissingHostHeader);
+            }
         }
 
         private void ParseParameters()
         {
-            throw new NotImplementedException();
+            if (this.Url.Contains("?"))
+            {
+                string query = this.Url
+                    .Split('?')[1];
+                this.ParseQuery(query, this.QueryParameters);
+            }
         }
 
         private HttpRequestMethod ParseRequestMethod(string requestMethod)
         {
-            var type = Enum.GetValues(typeof(HttpRequestMethod));
+            var requestMethodTypes = Enum.GetValues(typeof(HttpRequestMethod));
 
-            foreach (var item in type)
+            foreach (var methodType in requestMethodTypes)
             {
-                if (item.Equals(requestMethod))
+                if (methodType.Equals(requestMethod))
                 {
-                    return (HttpRequestMethod)item;
-                    // TODO
+                    // TODO: Try to remove type casting, if possible.
+                    return (HttpRequestMethod)methodType;
                 }
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException(UnexistingRequestMethodType);
+        }
+
+        private void ParseQuery(string query, IDictionary<string, string> data)
+        {
+            if (query.Contains("="))
+            {
+                string[] queryPairs = query
+                    .Split('&');
+
+                foreach (string queryPair in queryPairs)
+                {
+                    string[] queryArgs = queryPair
+                        .Split('=');
+
+                    if (queryArgs.Length == HttpQueryLength)
+                    {
+                        data.Add(WebUtility.UrlDecode(queryArgs[0]), WebUtility.UrlDecode(queryArgs[1]));
+                    }
+                }
+            }
         }
     }
 }

@@ -2,10 +2,10 @@
 {
     public interface IHttpHeaderCollection
     {
-        void Add(HttpHeader header);
+        void Add(IHttpHeader header);
 
         bool ContainsKey(string key);
 
-        HttpHeader GetHeader(string key);
+        IHttpHeader GetHeader(string key);
     }
 }
