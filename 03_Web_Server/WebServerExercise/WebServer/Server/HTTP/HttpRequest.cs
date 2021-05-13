@@ -72,8 +72,12 @@
                 string[] headerArgs = requestLines[i]
                     .Split(new[] { ": " }, StringSplitOptions.None);
 
-                IHttpHeader header = new HttpHeader(headerArgs[0], headerArgs[1]);
-                this.HeaderCollection.Add(header);
+                if (headerArgs.Length == 2)
+                {
+
+                    IHttpHeader header = new HttpHeader(headerArgs[0], headerArgs[1]);
+                    this.HeaderCollection.Add(header);
+                }
             }
 
             if (!this.HeaderCollection.ContainsKey(HttpHostHeader))
@@ -98,7 +102,7 @@
 
             foreach (HttpRequestMethod methodType in requestMethodTypes)
             {
-                if (methodType.Equals(requestMethod))
+                if (methodType.ToString().Equals(requestMethod))
                 {
                     return methodType;
                 }

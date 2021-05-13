@@ -35,7 +35,7 @@
                 return kvp.Value.RequestHandler.Handle(httpContext);
             }
 
-            return null;    
+            return null;
         }
     }
 }
