@@ -1,7 +1,7 @@
 ﻿namespace WebServer.Server.HTTP.Contracts
 {
+    using Enums;
     using System.Collections.Generic;
-    using WebServer.Server.Enums;
 
     public interface IHttpRequest
     {

@@ -1,8 +1,8 @@
 ﻿namespace WebServer.Server.HTTP
 {
+    using HTTP.Contracts;
     using System;
     using System.Collections.Generic;
-    using WebServer.Server.HTTP.Contracts;
 
     public class HttpHeaderCollection : IHttpHeaderCollection
     {

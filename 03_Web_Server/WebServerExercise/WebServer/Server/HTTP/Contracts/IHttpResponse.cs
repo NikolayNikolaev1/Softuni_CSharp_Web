@@ -1,6 +1,6 @@
 ﻿namespace WebServer.Server.HTTP.Contracts
 {
-    public interface IHttpeResponse
+    public interface IHttpResponse
     {
         string Response { get; }
 

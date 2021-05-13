@@ -1,6 +1,6 @@
 ﻿namespace WebServer.Server.HTTP
 {
-    using WebServer.Server.HTTP.Contracts;
+    using HTTP.Contracts;
 
     public class HttpHeader : IHttpHeader
     {

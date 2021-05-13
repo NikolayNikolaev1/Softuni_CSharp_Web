@@ -1,7 +1,7 @@
 ﻿namespace WebServer.Server.HTTP.Response
 {
-    using WebServer.Server.Contracts;
-    using WebServer.Server.Enums;
+    using Enums;
+    using Server.Contracts;
 
     public class ViewResponse : HttpResponse
     {

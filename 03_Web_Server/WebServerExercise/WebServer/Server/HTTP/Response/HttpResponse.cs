@@ -1,13 +1,13 @@
 ﻿namespace WebServer.Server.HTTP.Response
 {
+    using Contracts;
+    using Enums;
+    using Server.Contracts;
     using System.Text;
-    using WebServer.Server.Contracts;
-    using WebServer.Server.Enums;
-    using WebServer.Server.HTTP.Contracts;
 
     using static Constants;
 
-    public abstract class HttpResponse : IHttpeResponse
+    public abstract class HttpResponse : IHttpResponse
     {
         private readonly IView view;
         private HttpResponseStatusCode statusCode;

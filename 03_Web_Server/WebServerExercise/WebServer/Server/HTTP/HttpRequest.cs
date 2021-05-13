@@ -1,11 +1,12 @@
 ﻿namespace WebServer.Server.HTTP
 {
+    using Enums;
     using Exceptions;
+    using HTTP.Contracts;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
-    using WebServer.Server.Enums;
-    using WebServer.Server.HTTP.Contracts;
 
     using static Exceptions.ErrorMessages.BadRequestException;
     using static Constants;
@@ -93,18 +94,17 @@
 
         private HttpRequestMethod ParseRequestMethod(string requestMethod)
         {
-            var requestMethodTypes = Enum.GetValues(typeof(HttpRequestMethod));
+            var requestMethodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
 
-            foreach (var methodType in requestMethodTypes)
+            foreach (HttpRequestMethod methodType in requestMethodTypes)
             {
                 if (methodType.Equals(requestMethod))
                 {
-                    // TODO: Try to remove type casting, if possible.
-                    return (HttpRequestMethod)methodType;
+                    return methodType;
                 }
             }
 
-            throw new NotImplementedException(UnexistingRequestMethodType);
+            throw new BadRequestException(UnexistingRequestMethodType);
         }
 
         private void ParseQuery(string query, IDictionary<string, string> data)
