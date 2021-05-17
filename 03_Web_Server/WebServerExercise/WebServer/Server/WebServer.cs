@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server
 {
     using Contracts;
+    using Core;
     using Routing;
     using Routing.Contracts;
     using System;
@@ -19,6 +20,9 @@
 
         public WebServer(int port, IAppRouteConfig routeConfig)
         {
+            CoreValidator.ThrowIfNull(port, nameof(port));
+            CoreValidator.ThrowIfNull(routeConfig, nameof(routeConfig));
+
             this.port = port;
             this.tcpListener = new TcpListener(IPAddress.Parse(IpAddress), port);
             this.serverRouteConfig = new ServerRouteConfig(routeConfig);
@@ -33,7 +37,6 @@
 
             Task task = Task.Run(this.ListenLoop);
             task.Wait();
-
         }
 
         private async Task ListenLoop()

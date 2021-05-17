@@ -1,8 +1,11 @@
 ﻿namespace WebServer.Server.HTTP
 {
-    using HTTP.Contracts;
+    using Contracts;
+    using Core;
     using System;
     using System.Collections.Generic;
+
+    using static Exceptions.ErrorMessages.BadRequestException;
 
     public class HttpHeaderCollection : IHttpHeaderCollection
     {
@@ -13,31 +16,31 @@
             this.headers = new Dictionary<string, IHttpHeader>();
         }
 
-        public void Add(IHttpHeader header) => this.headers.Add(header.Key, header);
+        public void Add(IHttpHeader header)
+        {
+            CoreValidator.ThrowIfNull(header, nameof(header));
+            this.headers[header.Key] = header;
+        } 
 
         public bool ContainsKey(string key)
         {
-            if (this.headers.ContainsKey(key))
-            {
-                return true;
-            }
-
-            return false;
+            CoreValidator.ThrowIfNull(key, nameof(key));
+            return this.headers.ContainsKey(key);
         }
 
         public IHttpHeader GetHeader(string key)
         {
-            if (this.ContainsKey(key))
+            CoreValidator.ThrowIfNull(key, nameof(key));
+
+            if (!this.ContainsKey(key))
             {
-                return this.headers[key];
+                throw new InvalidOperationException(MissingKeyInHeaders);
             }
 
-            return null;
+            return this.headers[key];
         }
 
         public override string ToString()
-        {
-            return string.Join(Environment.NewLine, this.headers);
-        }
+            => string.Join(Environment.NewLine, this.headers);
     }
 }

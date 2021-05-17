@@ -1,7 +1,7 @@
 ﻿namespace WebServer.Server.Routing
 {
+    using Contracts;
     using Enums;
-    using Routing.Contracts;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,18 +10,23 @@
 
     public class ServerRouteConfig : IServerRouteConfig
     {
+        private readonly IDictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>> routes;
+
         public ServerRouteConfig(IAppRouteConfig appRouteConfig)
         {
+            this.routes = new Dictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>>();
             this.AddRequestMethodsToRoutes();
             this.InitializeServerConfig(appRouteConfig);
         }
 
-        public IDictionary<HttpRequestMethod, Dictionary<string, IRoutingContext>> Routes { get; private set; }
-            = new Dictionary<HttpRequestMethod, Dictionary<string, IRoutingContext>>();
+        public IDictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>> Routes
+            => routes;
 
         private void AddRequestMethodsToRoutes()
         {
-            var methodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
+            var methodTypes = Enum
+                .GetValues(typeof(HttpRequestMethod))
+                .Cast<HttpRequestMethod>();
 
             foreach (HttpRequestMethod requestMethod in methodTypes)
             {

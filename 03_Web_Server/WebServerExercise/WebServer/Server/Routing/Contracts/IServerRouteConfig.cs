@@ -1,10 +1,10 @@
 ﻿namespace WebServer.Server.Routing.Contracts
 {
-    using System.Collections.Generic;
     using Enums;
+    using System.Collections.Generic;
 
     public interface IServerRouteConfig
     {
-        IDictionary<HttpRequestMethod, Dictionary<string, IRoutingContext>> Routes { get; }
+        IDictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>> Routes { get; }
     }
 }

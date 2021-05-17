@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server.Handlers
 {
-    using Handlers.Contracts;
+    using Contracts;
+    using Core;
     using HTTP.Contracts;
     using System;
 
@@ -8,16 +9,17 @@
 
     public abstract class RequestHandler : IRequestHandler
     {
-        private readonly Func<IHttpRequest, IHttpResponse> func;
+        private readonly Func<IHttpRequest, IHttpResponse> handlingFunc;
 
-        protected RequestHandler(Func<IHttpRequest, IHttpResponse> func)
+        protected RequestHandler(Func<IHttpRequest, IHttpResponse> handlingFunc)
         {
-            this.func = func;
+            CoreValidator.ThrowIfNull(handlingFunc, nameof(handlingFunc));
+            this.handlingFunc = handlingFunc;
         }
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            IHttpResponse httpResponse = this.func.Invoke(httpContext.Request);
+            IHttpResponse httpResponse = this.handlingFunc(httpContext.Request);
             httpResponse.AddHeader(HeaderKeyContentType, HeaderValueTextHtml);
             return httpResponse;
         }

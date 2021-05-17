@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server
 {
     using Contracts;
+    using Core;
     using Handlers;
     using HTTP;
     using HTTP.Contracts;
@@ -17,6 +18,8 @@
 
         public ConnectionHandler(Socket client, IServerRouteConfig serverRouteConfig)
         {
+            CoreValidator.ThrowIfNull(client, nameof(client));
+            CoreValidator.ThrowIfNull(serverRouteConfig, nameof(serverRouteConfig));
             this.client = client;
             this.serverRouteConfig = serverRouteConfig;
         }
@@ -26,12 +29,12 @@
             string request = await this.ReadRequest();
             IHttpContext httpContext = new HttpContext(request);
             IHttpResponse response = new HttpHandler(this.serverRouteConfig).Handle(httpContext);
-            var toBytes = new ArraySegment<byte>(Encoding.ASCII.GetBytes(response.Response));
+            var toBytes = new ArraySegment<byte>(Encoding.ASCII.GetBytes(response.ToString()));
 
             await this.client.SendAsync(toBytes, SocketFlags.None);
 
             Console.WriteLine(request);
-            Console.WriteLine(response.Response);
+            Console.WriteLine(response.ToString());
 
             this.client.Shutdown(SocketShutdown.Both);
         }

@@ -1,8 +1,12 @@
 ﻿namespace WebServer.Server.HTTP.Contracts
 {
+    using Enums;
+
     public interface IHttpResponse
     {
-        string Response { get; }
+        IHttpHeaderCollection HeaderCollection { get; }
+
+        HttpResponseStatusCode StatusCode { get; }
 
         void AddHeader(string key, string redirectUrl);
     }

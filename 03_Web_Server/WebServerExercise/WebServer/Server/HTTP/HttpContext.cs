@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server.HTTP
 {
-    using HTTP.Contracts;
+    using Contracts;
+    using Core;
 
     public class HttpContext : IHttpContext
     {
@@ -8,6 +9,7 @@
 
         public HttpContext(string requestString)
         {
+            CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
             this.request = new HttpRequest(requestString);
         }
 

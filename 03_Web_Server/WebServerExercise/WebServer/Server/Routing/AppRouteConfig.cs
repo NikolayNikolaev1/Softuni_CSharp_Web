@@ -1,42 +1,76 @@
 ﻿namespace WebServer.Server.Routing
 {
+    using Contracts;
+    using Core;
     using Enums;
+    using Exceptions;
     using Handlers;
-    using Routing.Contracts;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
+    using static Exceptions.ErrorMessages.BadRequestException;
+
     public class AppRouteConfig : IAppRouteConfig
     {
-        //private readonly IDictionary<HttpRequestMethod, Dictionary<string, RequestHandler>> routes;
+        private readonly IDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> routes;
 
         public AppRouteConfig()
         {
-            this.Routes = new Dictionary<HttpRequestMethod, Dictionary<string, RequestHandler>>();
+            this.routes = new Dictionary<HttpRequestMethod, IDictionary<string, RequestHandler>>();
             this.AddRequestMethodsToRoutes();
         }
 
-        public IDictionary<HttpRequestMethod, Dictionary<string, RequestHandler>> Routes { get; private set; }
-            = new Dictionary<HttpRequestMethod, Dictionary<string, RequestHandler>>();
+        public IDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> Routes
+            => this.routes;
 
         public void AddRoute(string route, RequestHandler httpHandler)
         {
-            var methodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
+            CoreValidator.ThrowIfNullOrEmpty(route, nameof(route));
+            CoreValidator.ThrowIfNull(httpHandler, nameof(httpHandler));
 
-            foreach (HttpRequestMethod requestMethod in methodTypes)
+            var handlerName = httpHandler
+                .GetType()
+                .ToString()
+                .ToLower();
+
+            if (handlerName.Contains("get"))
             {
-                this.Routes[requestMethod].Add(route, httpHandler);
+                this.routes[HttpRequestMethod.GET].Add(route, httpHandler);
             }
+            else if (handlerName.Contains("post"))
+            {
+                this.routes[HttpRequestMethod.POST].Add(route, httpHandler);
+            }
+            else
+            {
+                throw new BadRequestException(UnexistingRequestMethodType);
+            }
+            // TODO : Use reflection
+
+            //var requestmethod = RequestMethodParser.Parse()
+
+
+            //var methodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
+
+            //foreach (HttpRequestMethod requestMethod in methodTypes)
+            //{
+            //    if (requestMethod.Equals(httpHandler))
+            //    {
+            //        this.routes[requestMethod].Add(route, httpHandler);
+            //    }
+            //}
         }
 
         private void AddRequestMethodsToRoutes()
         {
-            var methodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
+            var methodTypes = Enum
+                .GetValues(typeof(HttpRequestMethod))
+                .Cast<HttpRequestMethod>();
 
             foreach (HttpRequestMethod requestMethod in methodTypes)
             {
-                this.Routes.Add(requestMethod, new Dictionary<string, RequestHandler>());
+                this.routes[requestMethod] = new Dictionary<string, RequestHandler>();
             }
         }
     }

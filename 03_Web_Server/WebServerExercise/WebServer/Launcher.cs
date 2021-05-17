@@ -9,11 +9,9 @@
     public class Launcher : IRunnable
     {
         private WebServer webServer;
-        public static void Main(string[] args)
-        {
 
-            new Launcher().Run();
-        }
+        public static void Main()
+            => new Launcher().Run();
 
         public void Run()
         {

@@ -4,7 +4,22 @@ using System.Text;
 
 namespace WebServer.Server
 {
-    class Model
+    public class Model
     {
+        private readonly IDictionary<string, object> objects;
+
+        public Model()
+        {
+            this.objects = new Dictionary<string, object>();
+        }
+
+        public object this[string key]
+        {
+            get => this.objects[key];
+            set => this.objects[key] = value;
+        }
+
+        public void Add(string key, object value) 
+            => this.objects.Add(key, value);
     }
 }

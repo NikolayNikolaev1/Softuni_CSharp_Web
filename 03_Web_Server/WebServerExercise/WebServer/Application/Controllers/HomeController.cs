@@ -3,13 +3,11 @@
     using Server.Enums;
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
-    using Views;
+    using Application.Views;
 
     public class HomeController
     {
         public IHttpResponse Index()
-        {
-            return new ViewResponse(HttpResponseStatusCode.OK, new HomeIndexView());
-        }
+            => new ViewResponse(HttpResponseStatusCode.OK, new HomeIndexView());
     }
 }

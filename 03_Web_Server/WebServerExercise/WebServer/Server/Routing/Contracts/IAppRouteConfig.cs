@@ -6,7 +6,7 @@
 
     public interface IAppRouteConfig
     {
-        IDictionary<HttpRequestMethod, Dictionary<string, RequestHandler>> Routes { get; }
+        IDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> Routes { get; }
 
         void AddRoute(string route, RequestHandler httpHandler);
     }

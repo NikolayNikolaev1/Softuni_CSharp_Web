@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server.HTTP
 {
-    using HTTP.Contracts;
+    using Contracts;
+    using Core;
 
     public class HttpHeader : IHttpHeader
     {
@@ -21,6 +22,7 @@
             }
             private set
             {
+                CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
                 this.key = value;
             }
         }
@@ -33,13 +35,12 @@
             }
             private set
             {
+                CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
                 this.value = value;
             }
         }
 
-        public override string ToString()
-        {
-            return string.Format($"{this.key}: {this.value}");
-        }
+        public override string ToString() 
+            => string.Format($"{this.key}: {this.value}");
     }
 }

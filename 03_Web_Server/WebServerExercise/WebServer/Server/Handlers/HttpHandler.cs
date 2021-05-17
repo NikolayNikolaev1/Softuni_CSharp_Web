@@ -1,7 +1,10 @@
 ﻿namespace WebServer.Server.Handlers
 {
-    using Handlers.Contracts;
+    using Contracts;
+    using Core;
+    using Enums;
     using HTTP.Contracts;
+    using HTTP.Response;
     using Routing.Contracts;
     using System.Text.RegularExpressions;
 
@@ -11,31 +14,43 @@
 
         public HttpHandler(IServerRouteConfig serverRouteConfig)
         {
+            CoreValidator.ThrowIfNull(serverRouteConfig, nameof(serverRouteConfig));
             this.serverRouteConfig = serverRouteConfig;
         }
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            foreach (var kvp in this.serverRouteConfig.Routes[httpContext.Request.RequestMethod])
+            HttpRequestMethod requestMethod = httpContext.Request.RequestMethod;
+            string requestPath = httpContext.Request.Path;
+            var registeredRoutes = this.serverRouteConfig.Routes[requestMethod];
+
+            foreach (var registeredRoute in registeredRoutes)
             {
-                string pattern = kvp.Key;
-                Regex regex = new Regex(pattern);
-                Match match = regex.Match(httpContext.Request.Path);
+                string routePattern = registeredRoute.Key;
+                IRoutingContext routingContext = registeredRoute.Value;
+
+                Regex regex = new Regex(routePattern);
+                Match match = regex.Match(requestPath);
+
 
                 if (!match.Success)
                 {
                     continue;
                 }
 
-                foreach (string parameter in kvp.Value.Parameters)
+                var parameters = routingContext.Parameters;
+
+                foreach (string parameter in parameters)
                 {
-                    httpContext.Request.AddUrlParameter(parameter, match.Groups[parameter].Value);
+
+                    string parameterValue = match.Groups[parameter].Value;
+                    httpContext.Request.AddUrlParameter(parameter, parameterValue);
                 }
 
-                return kvp.Value.RequestHandler.Handle(httpContext);
+                return routingContext.RequestHandler.Handle(httpContext);
             }
 
-            return null;
+            return new NotFoundResponse();
         }
     }
 }

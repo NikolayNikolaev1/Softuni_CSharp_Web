@@ -1,11 +1,11 @@
 ﻿namespace WebServer.Server.HTTP
 {
+    using Contracts;
+    using Core;
     using Enums;
     using Exceptions;
-    using HTTP.Contracts;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
 
     using static Exceptions.ErrorMessages.BadRequestException;
@@ -15,24 +15,34 @@
     {
         public HttpRequest(string requestString)
         {
+            CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
             this.ParseRequest(requestString);
         }
 
-        public IDictionary<string, string> FormData { get; private set; } = new Dictionary<string, string>();
+        public IDictionary<string, string> FormData { get; private set; } 
+            = new Dictionary<string, string>();
 
-        public IHttpHeaderCollection HeaderCollection { get; private set; } = new HttpHeaderCollection();
+        public IHttpHeaderCollection HeaderCollection { get; private set; } 
+            = new HttpHeaderCollection();
 
         public string Path { get; private set; }
 
-        public IDictionary<string, string> QueryParameters { get; private set; } = new Dictionary<string, string>();
+        public IDictionary<string, string> QueryParameters { get; private set; } 
+            = new Dictionary<string, string>();
 
         public HttpRequestMethod RequestMethod { get; private set; }
 
         public string Url { get; private set; }
 
-        public IDictionary<string, string> UrlParameters { get; private set; } = new Dictionary<string, string>();
+        public IDictionary<string, string> UrlParameters { get; private set; } 
+            = new Dictionary<string, string>();
 
-        public void AddUrlParameter(string key, string value) => this.UrlParameters.Add(key, value);
+        public void AddUrlParameter(string key, string value)
+        {
+            CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
+            CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
+            this.UrlParameters[key] = value;
+        }
 
         private void ParseRequest(string requestString)
         {
@@ -67,17 +77,21 @@
         {
             int endIndex = Array.IndexOf(requestLines, string.Empty);
 
-            for (int i = 0; i < endIndex; i++)
+            for (int i = 1; i < endIndex; i++)
             {
                 string[] headerArgs = requestLines[i]
                     .Split(new[] { ": " }, StringSplitOptions.None);
 
-                if (headerArgs.Length == 2)
+                if (headerArgs.Length != HttpQueryLength)
                 {
-
-                    IHttpHeader header = new HttpHeader(headerArgs[0], headerArgs[1]);
-                    this.HeaderCollection.Add(header);
+                    throw new BadRequestException(InvalidRequestLine);
                 }
+
+                string headerKey = headerArgs[0];
+                string headerValue = headerArgs[1].Trim();
+
+                IHttpHeader header = new HttpHeader(headerKey, headerValue);
+                this.HeaderCollection.Add(header);
             }
 
             if (!this.HeaderCollection.ContainsKey(HttpHostHeader))
@@ -98,17 +112,8 @@
 
         private HttpRequestMethod ParseRequestMethod(string requestMethod)
         {
-            var requestMethodTypes = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
-
-            foreach (HttpRequestMethod methodType in requestMethodTypes)
-            {
-                if (methodType.ToString().Equals(requestMethod))
-                {
-                    return methodType;
-                }
-            }
-
-            throw new BadRequestException(UnexistingRequestMethodType);
+            CoreValidator.ThrowIfNullOrEmpty(requestMethod, nameof(requestMethod));
+            return RequestMethodParser.Parse(requestMethod);
         }
 
         private void ParseQuery(string query, IDictionary<string, string> data)
@@ -125,7 +130,9 @@
 
                     if (queryArgs.Length == HttpQueryLength)
                     {
-                        data.Add(WebUtility.UrlDecode(queryArgs[0]), WebUtility.UrlDecode(queryArgs[1]));
+                        var queryKey = WebUtility.UrlDecode(queryArgs[0]);
+                        var queryValue = WebUtility.UrlDecode(queryArgs[1]);
+                        data.Add(queryKey, queryValue);
                     }
                 }
             }
