@@ -113,7 +113,7 @@
         private HttpRequestMethod ParseRequestMethod(string requestMethod)
         {
             CoreValidator.ThrowIfNullOrEmpty(requestMethod, nameof(requestMethod));
-            return RequestMethodParser.Parse(requestMethod);
+            return RequestMethodCollector.Parse(requestMethod);
         }
 
         private void ParseQuery(string query, IDictionary<string, string> data)

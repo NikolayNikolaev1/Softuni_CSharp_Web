@@ -1,6 +1,7 @@
 ﻿namespace WebServer.Server.Routing
 {
     using Contracts;
+    using Core;
     using Enums;
     using System;
     using System.Collections.Generic;
@@ -10,12 +11,11 @@
 
     public class ServerRouteConfig : IServerRouteConfig
     {
-        private readonly IDictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>> routes;
+        public readonly IDictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>> routes;
 
         public ServerRouteConfig(IAppRouteConfig appRouteConfig)
         {
-            this.routes = new Dictionary<HttpRequestMethod, IDictionary<string, IRoutingContext>>();
-            this.AddRequestMethodsToRoutes();
+            this.routes = RequestMethodCollector.AddRequestMethodsToRoutes<IRoutingContext>();
             this.InitializeServerConfig(appRouteConfig);
         }
 
@@ -42,6 +42,8 @@
                 {
                     IList<string> args = new List<string>();
                     string parsedRegex = this.ParseRoute(requestHandler.Key, args);
+                    IRoutingContext routingContext = new RoutingContext(requestHandler.Value, args);
+                    this.routes[kvp.Key].Add(parsedRegex, routingContext);
                 }
             }
         }
