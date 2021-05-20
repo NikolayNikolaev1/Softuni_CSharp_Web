@@ -5,9 +5,9 @@
 
     using static Server.Constants;
 
-    public class HomeIndexView : IView
+    public class HomeAboutView : IView
     {
         public string View()
-            => File.ReadAllText(HtmlPath + "\\index.html");
+            => File.ReadAllText(HtmlPath + "\\about.html");
     }
 }

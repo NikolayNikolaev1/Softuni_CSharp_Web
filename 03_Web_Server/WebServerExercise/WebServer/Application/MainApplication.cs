@@ -13,6 +13,15 @@
                 .AddRoute("/", new GetRequestHandler(
                     httpContext => new HomeController().Index()));
             appRouteConfig
+                .AddRoute("/about", new GetRequestHandler(
+                    httpContext => new HomeController().About()));
+            appRouteConfig
+                .AddRoute("/add", new GetRequestHandler(
+                    httpContext => new CakeController().Add()));
+            appRouteConfig
+                .AddRoute("/search", new GetRequestHandler(
+                    httpContext => new CakeController().Search()));
+            appRouteConfig
                 .AddRoute("/register", new PostRequestHandler(
                     httpContext => new UserController().RegisterPost(httpContext.FormData["name"])));
             appRouteConfig

@@ -6,6 +6,8 @@
     using Server.Routing;
     using Server.Routing.Contracts;
 
+    using static Server.Constants;
+
     public class Launcher : IRunnable
     {
         private WebServer webServer;
@@ -19,7 +21,7 @@
             IAppRouteConfig routeConfig = new AppRouteConfig();
             app.Start(routeConfig);
 
-            this.webServer = new WebServer(8230, routeConfig);
+            this.webServer = new WebServer(Port, routeConfig);
             this.webServer.Run();
         }
     }

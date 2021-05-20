@@ -6,6 +6,8 @@
 
         public const string HeaderValueTextHtml = "text/html";
 
+        public const string HtmlPath = "..\\..\\..\\Application\\Resources\\html";
+
         public const string HttpHostHeader = "Host";
 
         public const string HttpLocationHeader = "Location";
@@ -17,5 +19,8 @@
         public const string HttpVersion = "http/1.1";
 
         public const string IpAddress = "127.0.0.1";
+
+        public const int Port = 8080;
+
     }
 }
