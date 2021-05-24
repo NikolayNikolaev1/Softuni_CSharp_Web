@@ -5,6 +5,8 @@
 
     public interface IHttpRequest
     {
+        IHttpCookieCollection Cookies { get; }
+
         IDictionary<string, string> FormData { get; }
 
         IHttpHeaderCollection HeaderCollection { get; }
@@ -14,6 +16,8 @@
         IDictionary<string, string> QueryParameters { get; }
 
         HttpRequestMethod RequestMethod { get; }
+
+        IHttpSession Session { get; set; }
 
         string Url { get; }
 

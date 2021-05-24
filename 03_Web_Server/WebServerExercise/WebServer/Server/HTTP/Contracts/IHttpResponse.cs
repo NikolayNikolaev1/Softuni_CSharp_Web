@@ -4,6 +4,8 @@
 
     public interface IHttpResponse
     {
+        IHttpCookieCollection Cookies { get; }
+
         IHttpHeaderCollection HeaderCollection { get; }
 
         HttpResponseStatusCode StatusCode { get; }

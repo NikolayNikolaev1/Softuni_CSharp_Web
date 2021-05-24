@@ -10,6 +10,11 @@
         public void Start(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig
+                .AddRoute("/style.css", new GetRequestHandler(
+                   httpContext => new HomeController().Styles()));
+
+
+            appRouteConfig
                 .AddRoute("/", new GetRequestHandler(
                     httpContext => new HomeController().Index()));
             appRouteConfig

@@ -3,7 +3,6 @@
     using Contracts;
     using Core;
     using Enums;
-    using Server.Contracts;
     using System.Text;
 
     using static Constants;
@@ -13,7 +12,10 @@
         private HttpResponseStatusCode statusCode;
         private string statusMessage => this.statusCode.ToString();
 
-        public IHttpHeaderCollection HeaderCollection { get; set; } 
+        public IHttpCookieCollection Cookies { get; private set; } 
+            = new HttpCookieCollection();
+
+        public IHttpHeaderCollection HeaderCollection { get; private set; } 
             = new HttpHeaderCollection();
 
         public HttpResponseStatusCode StatusCode
@@ -39,7 +41,6 @@
 
             response.AppendLine($"{HttpVersion.ToUpper()} {statusCodeNumber} {this.statusMessage}");
             response.AppendLine(this.HeaderCollection.ToString());
-            response.AppendLine();
 
             return response.ToString();
         }

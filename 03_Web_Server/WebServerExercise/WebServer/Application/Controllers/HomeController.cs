@@ -12,5 +12,9 @@
 
         public IHttpResponse About()
             => new ViewResponse(HttpResponseStatusCode.OK, new HomeAboutView());
+
+
+        public IHttpResponse Styles()
+            => new ViewResponse(HttpResponseStatusCode.OK, new StylesView());
     }
 }

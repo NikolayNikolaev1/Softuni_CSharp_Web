@@ -10,6 +10,7 @@
 
     using static Exceptions.ErrorMessages.BadRequestException;
     using static Constants;
+    using System.Linq;
 
     public class HttpRequest : IHttpRequest
     {
@@ -18,23 +19,27 @@
             CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
             this.ParseRequest(requestString);
         }
+        public IHttpCookieCollection Cookies { get; private set; }
+            = new HttpCookieCollection();
 
-        public IDictionary<string, string> FormData { get; private set; } 
+        public IDictionary<string, string> FormData { get; private set; }
             = new Dictionary<string, string>();
 
-        public IHttpHeaderCollection HeaderCollection { get; private set; } 
+        public IHttpHeaderCollection HeaderCollection { get; private set; }
             = new HttpHeaderCollection();
 
         public string Path { get; private set; }
 
-        public IDictionary<string, string> QueryParameters { get; private set; } 
+        public IDictionary<string, string> QueryParameters { get; private set; }
             = new Dictionary<string, string>();
 
         public HttpRequestMethod RequestMethod { get; private set; }
 
+        public IHttpSession Session { get; set; }
+
         public string Url { get; private set; }
 
-        public IDictionary<string, string> UrlParameters { get; private set; } 
+        public IDictionary<string, string> UrlParameters { get; private set; }
             = new Dictionary<string, string>();
 
         public void AddUrlParameter(string key, string value)
@@ -65,11 +70,64 @@
                 .Split(new[] { '?', '#' }, StringSplitOptions.RemoveEmptyEntries)[0];
 
             this.ParseHeaders(requestLines);
+            this.ParseCookies();
             this.ParseParameters();
 
             if (this.RequestMethod == HttpRequestMethod.POST)
             {
                 this.ParseQuery(requestLines[requestLines.Length - 1], this.FormData);
+            }
+
+            this.SetSession();
+        }
+
+        private void SetSession()
+        {
+
+            if (this.Cookies.ContainsKey(SessionCookieKey))
+            {
+                IHttpCookie cookie = this.Cookies.Get(SessionCookieKey);
+                string sessionId = cookie.Value;
+
+                this.Session = SessionStore.Get(sessionId);
+            }
+        }
+
+        private void ParseCookies()
+        {
+            if (this.HeaderCollection.ContainsKey(HttpCookieHeader))
+            {
+                foreach (var cookie in this.HeaderCollection.GetHeader(HttpCookieHeader))
+                {
+                    if (!cookie.Value.Contains('='))
+                    {
+                        return;
+                    }
+
+                    var cookieParts = cookie
+                        .Value
+                        .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries)
+                        .ToList();
+
+                    if (!cookieParts.Any())
+                    {
+                        continue;
+                    }
+
+                    foreach (var cookiePart in cookieParts)
+                    {
+                        string[] cookieKeyValuePair = cookiePart
+                        .Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (cookieKeyValuePair.Length == 2)
+                        {
+                            string key = cookieKeyValuePair[0].Trim();
+                            string value = cookieKeyValuePair[1].Trim();
+
+                            this.Cookies.Add(new HttpCookie(key, value, false));
+                        }
+                    }
+                }
             }
         }
 
