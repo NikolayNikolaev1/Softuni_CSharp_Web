@@ -10,11 +10,6 @@
         public void Start(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig
-                .AddRoute("/style.css", new GetRequestHandler(
-                   httpContext => new HomeController().Styles()));
-
-
-            appRouteConfig
                 .AddRoute("/", new GetRequestHandler(
                     httpContext => new HomeController().Index()));
             appRouteConfig
@@ -22,6 +17,9 @@
                     httpContext => new HomeController().About()));
             appRouteConfig
                 .AddRoute("/add", new GetRequestHandler(
+                    httpContext => new CakeController().Add()));
+            appRouteConfig
+                .AddRoute("/add", new PostRequestHandler(
                     httpContext => new CakeController().Add()));
             appRouteConfig
                 .AddRoute("/search", new GetRequestHandler(

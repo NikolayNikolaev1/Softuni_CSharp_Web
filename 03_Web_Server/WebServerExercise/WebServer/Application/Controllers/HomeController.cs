@@ -1,20 +1,14 @@
 ﻿namespace WebServer.Application.Controllers
 {
-    using Server.Enums;
+    using Infrastructure;
     using Server.HTTP.Contracts;
-    using Server.HTTP.Response;
-    using Views;
 
-    public class HomeController
+    public class HomeController : Controller
     {
         public IHttpResponse Index()
-            => new ViewResponse(HttpResponseStatusCode.OK, new HomeIndexView());
+            => this.FileViewResponse("index");
 
         public IHttpResponse About()
-            => new ViewResponse(HttpResponseStatusCode.OK, new HomeAboutView());
-
-
-        public IHttpResponse Styles()
-            => new ViewResponse(HttpResponseStatusCode.OK, new StylesView());
+            => this.FileViewResponse("about");
     }
 }

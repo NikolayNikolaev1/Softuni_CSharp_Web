@@ -8,8 +8,6 @@
 
         public const string HeaderValueTextHtml = "text/html";
 
-        public const string HtmlPath = "..\\..\\..\\Application\\Resources\\html";
-
         public const string HttpCookieHeader = "Cookie";
 
         public const string HttpHostHeader = "Host";
