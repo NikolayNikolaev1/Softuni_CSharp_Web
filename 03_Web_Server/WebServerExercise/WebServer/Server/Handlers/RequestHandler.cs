@@ -2,17 +2,17 @@
 {
     using Contracts;
     using Core;
-    using global::WebServer.Server.HTTP;
+    using HTTP;
     using HTTP.Contracts;
     using System;
 
     using static Constants;
 
-    public abstract class RequestHandler : IRequestHandler
+    public class RequestHandler : IRequestHandler
     {
         private readonly Func<IHttpRequest, IHttpResponse> handlingFunc;
 
-        protected RequestHandler(Func<IHttpRequest, IHttpResponse> handlingFunc)
+        public RequestHandler(Func<IHttpRequest, IHttpResponse> handlingFunc)
         {
             CoreValidator.ThrowIfNull(handlingFunc, nameof(handlingFunc));
             this.handlingFunc = handlingFunc;
@@ -38,7 +38,6 @@
                 response
                     .HeaderCollection
                     .Add(HeaderKeySetCookie, $"{SessionCookieKey}={sessionIdToSend}; HttpOnly; path=/");
-
             }
 
 

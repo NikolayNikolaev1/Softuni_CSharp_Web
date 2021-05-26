@@ -3,13 +3,10 @@
     using Contracts;
     using Core;
     using Enums;
-    using Exceptions;
     using Handlers;
+    using HTTP.Contracts;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-
-    using static Exceptions.ErrorMessages.BadRequestException;
 
     public class AppRouteConfig : IAppRouteConfig
     {
@@ -23,42 +20,13 @@
         public IDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> Routes
             => this.routes;
 
-        public void AddRoute(string route, RequestHandler httpHandler)
-        {
-            CoreValidator.ThrowIfNullOrEmpty(route, nameof(route));
-            CoreValidator.ThrowIfNull(httpHandler, nameof(httpHandler));
+        public void AddRoute(string route, HttpRequestMethod method, RequestHandler httpHandler)
+            => this.routes[method].Add(route, httpHandler);
 
-            bool requestExist = false;
-            string handlerName = httpHandler
-                   .GetType()
-                   .ToString()
-                   .ToLower();
+        public void Get(string route, Func<IHttpRequest, IHttpResponse> handler)
+            => this.AddRoute(route, HttpRequestMethod.GET, new RequestHandler(handler));
 
-            foreach (HttpRequestMethod requestMethod in RequestMethodCollector.MethodTypes)
-            {
-                if (handlerName.Contains(requestMethod.ToString().ToLower()))
-                {
-                    routes[requestMethod].Add(route, httpHandler);
-                    requestExist = true;
-                }
-            }
-
-            if (!requestExist)
-            {
-                throw new BadRequestException(UnexistingRequestMethodType);
-            }
-        }
-
-        private void AddRequestMethodsToRoutes()
-        {
-            var methodTypes = Enum
-                .GetValues(typeof(HttpRequestMethod))
-                .Cast<HttpRequestMethod>();
-
-            foreach (HttpRequestMethod requestMethod in methodTypes)
-            {
-                this.routes[requestMethod] = new Dictionary<string, RequestHandler>();
-            }
-        }
+        public void Post(string route, Func<IHttpRequest, IHttpResponse> handler)
+            => this.AddRoute(route, HttpRequestMethod.POST, new RequestHandler(handler));
     }
 }

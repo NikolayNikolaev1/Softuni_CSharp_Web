@@ -27,14 +27,18 @@
         public async Task ProccessRequestAsync()
         {
             string request = await this.ReadRequest();
-            IHttpContext httpContext = new HttpContext(request);
-            IHttpResponse response = new HttpHandler(this.serverRouteConfig).Handle(httpContext);
-            var toBytes = new ArraySegment<byte>(Encoding.ASCII.GetBytes(response.ToString()));
 
-            await this.client.SendAsync(toBytes, SocketFlags.None);
+            if (request != null)
+            {
+                IHttpContext httpContext = new HttpContext(request);
+                IHttpResponse response = new HttpHandler(this.serverRouteConfig).Handle(httpContext);
+                var toBytes = new ArraySegment<byte>(Encoding.ASCII.GetBytes(response.ToString()));
 
-            Console.WriteLine(request);
-            Console.WriteLine(response.ToString());
+                await this.client.SendAsync(toBytes, SocketFlags.None);
+
+                Console.WriteLine(request);
+                Console.WriteLine(response.ToString());
+            }
 
             this.client.Shutdown(SocketShutdown.Both);
         }
@@ -54,6 +58,11 @@
                 {
                     break;
                 }
+            }
+
+            if (request.Length == 0)
+            {
+                return null;
             }
 
             return request;
