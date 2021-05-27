@@ -1,4 +1,4 @@
-﻿namespace WebServer.Application.Controllers
+﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
     using Server;
     using Server.Enums;

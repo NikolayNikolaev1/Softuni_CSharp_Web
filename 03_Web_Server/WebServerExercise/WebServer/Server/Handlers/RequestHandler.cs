@@ -21,8 +21,6 @@
         public IHttpResponse Handle(IHttpContext httpContext)
         {
             string sessionIdToSend = null;
-            IHttpResponse response = this.handlingFunc(httpContext.Request);
-
             IHttpResponse httpResponse = this.handlingFunc(httpContext.Request);
             httpResponse.AddHeader(HeaderKeyContentType, HeaderValueTextHtml);
 
@@ -35,16 +33,14 @@
 
             if (sessionIdToSend != null)
             {
-                response
+                httpResponse
                     .HeaderCollection
                     .Add(HeaderKeySetCookie, $"{SessionCookieKey}={sessionIdToSend}; HttpOnly; path=/");
             }
 
-
-
-            foreach (IHttpCookie cookie in response.Cookies)
+            foreach (IHttpCookie cookie in httpResponse.Cookies)
             {
-                response.HeaderCollection.Add(HeaderKeySetCookie, cookie.ToString());
+                httpResponse.HeaderCollection.Add(HeaderKeySetCookie, cookie.ToString());
             }
 
             return httpResponse;

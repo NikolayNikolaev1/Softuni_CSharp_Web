@@ -1,4 +1,4 @@
-﻿namespace WebServer.Application.Models
+﻿namespace WebServer.ByTheCakeApplication.Models
 {
     public class Cake
     {

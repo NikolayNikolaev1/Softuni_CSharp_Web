@@ -1,4 +1,4 @@
-﻿namespace WebServer.Application.Controllers
+﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
     using Infrastructure;
     using Server.HTTP.Contracts;
@@ -6,9 +6,9 @@
     public class HomeController : Controller
     {
         public IHttpResponse Index()
-            => this.FileViewResponse("index");
+            => this.FileViewResponse(@"home\index");
 
         public IHttpResponse About()
-            => this.FileViewResponse("about");
+            => this.FileViewResponse(@"home\about");
     }
 }

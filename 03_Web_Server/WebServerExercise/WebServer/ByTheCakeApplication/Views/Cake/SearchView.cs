@@ -1,12 +1,12 @@
-﻿namespace WebServer.Application.Views.Cake
+﻿namespace WebServer.ByTheCakeApplication.Views.Cake
 {
     using Server.Contracts;
 
-    public class AddView : IView
+    public class SearchView : IView
     {
         private readonly string htmlFile;
 
-        public AddView(string htmlFile)
+        public SearchView(string htmlFile)
         {
             this.htmlFile = htmlFile;
         }
