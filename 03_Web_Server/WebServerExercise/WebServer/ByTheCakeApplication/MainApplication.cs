@@ -18,6 +18,8 @@
                 .Post("/add", req => new CakeController().Add(req.FormData["name"], req.FormData["price"]));
             appRouteConfig
                 .Get("/search", req => new CakeController().Search(req.QueryParameters));
+            appRouteConfig
+                .Get("/login", req => new UserController().Login());
         }
     }
 }

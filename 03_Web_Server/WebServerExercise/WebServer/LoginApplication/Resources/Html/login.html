@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <form action="/login" method="post">
+        <div>
+            <label>Username</label>
+            <input type="text" name="username" />
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" name="password" />
+        </div>
+        <input type="submit" value="Log In" />
+    </form>
+
+    <div style="color: red; display: {{{display}}}">
+        {{{message}}}
+    </div>
+
+    <div style="display: {{{contentDisplay}}}">
+        <h2>Hello suAdmin!</h2>
+        <br />
+        <form action="/send" method="post">
+            <div>
+                <label>To: </label>
+                <input type="email" name="email" />
+            </div>
+            <div>
+                <label>Subject: </label>
+                <input type="text" name="subject" />
+            </div>
+            <div>
+                <label>Message: </label>
+                <input type="text" name="message" />
+            </div>
+            <input type="submit" value="Send" />
+        </form>
+    </div>
+
+</body>
+</html>

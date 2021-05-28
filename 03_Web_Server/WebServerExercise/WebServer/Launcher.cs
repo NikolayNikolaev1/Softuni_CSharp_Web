@@ -1,11 +1,12 @@
 ﻿namespace WebServer
 {
     using ByTheCakeApplication;
+    using CalculatorApplication;
+    using LoginApplication;
     using Server;
     using Server.Contracts;
     using Server.Routing;
     using Server.Routing.Contracts;
-
     using static Server.Constants;
 
     public class Launcher : IRunnable
