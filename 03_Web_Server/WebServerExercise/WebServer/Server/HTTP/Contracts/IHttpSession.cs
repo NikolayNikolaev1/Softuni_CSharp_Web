@@ -8,6 +8,8 @@
 
         void Clear();
 
+        bool Containts(string key);
+
         object GetParameter(string key);
 
         T Get<T>(string key) where T : class;

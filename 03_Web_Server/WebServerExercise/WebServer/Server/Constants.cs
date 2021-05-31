@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public const string CurrentUserSessionKey = "Current_User";
+
         public const string HeaderKeyContentType = "Content-Type";
 
         public const string HeaderKeySetCookie = "Set-Cookie";

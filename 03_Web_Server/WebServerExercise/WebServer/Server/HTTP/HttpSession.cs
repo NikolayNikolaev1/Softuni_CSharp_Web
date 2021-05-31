@@ -42,6 +42,12 @@
         public void Clear()
             => this.values.Clear();
 
+        public bool Containts(string key)
+        {
+            CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
+            return this.values.ContainsKey(key);
+        }
+
         public T Get<T>(string key) where T : class
             => this.GetParameter(key) as T;
 

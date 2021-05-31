@@ -6,14 +6,17 @@
     using Models;
     using System.IO;
     using System.Text;
+    using System;
 
     public class CakeController : Controller
     {
         private static IList<Cake> cakes = new List<Cake>();
-        private const string DatabasePath = @"..\..\..\ByTheCakeApplication\Data\database.csv";
 
         public IHttpResponse Add()
-            => this.FileViewResponse(@"cake\add", new Dictionary<string, string>() { ["display"] = "none" });
+        {
+            this.ViewData["display"] = "none";
+            return this.FileViewResponse(@"cake\add");
+        }
 
         public IHttpResponse Add(string name, string price)
         {
@@ -23,17 +26,20 @@
                 Price = decimal.Parse(price)
             });
 
+            StreamReader reader = new StreamReader(DatabasePath);
+            int id = reader.ReadToEnd().Split(Environment.NewLine).Length;
+            reader.Dispose();
+
             using (StreamWriter writer = new StreamWriter(DatabasePath, true))
             {
-                writer.WriteLine($"{name},{price}");
+                writer.WriteLine($"{id},{name},{price}");
             }
 
-            return this.FileViewResponse(@"cake\add", new Dictionary<string, string>()
-            {
-                ["name"] = name,
-                ["price"] = price,
-                ["display"] = "block"
-            });
+            this.ViewData["name"] = name;
+            this.ViewData["price"] = price;
+            this.ViewData["display"] = "block";
+
+            return this.FileViewResponse(@"cake\add");
         }
 
         public IHttpResponse Search(IDictionary<string, string> parameters)
@@ -51,24 +57,27 @@
                     string cake;
                     while ((cake = reader.ReadLine()) != null)
                     {
-                        cakeName = cake.Split(',')[0];
-                        cakePrice = cake.Split(',')[1];
+                        string cakeId = cake.Split(',')[0];
+                        cakeName = cake.Split(',')[1];
+                        cakePrice = cake.Split(',')[2];
 
                         if (cakeName.Contains(name))
                         {
-                            result.AppendLine($"<div>{cakeName} ${cakePrice}</div>");
+                            result.AppendLine($@"<div>{cakeName} ${cakePrice} <a href=""/shopping/add/{cakeId}"">Order</a></div>");
                         }
                     }
                 }
 
-                return this.FileViewResponse(@"cake\search", new Dictionary<string, string>()
-                {
-                    ["result"] = result.ToString(),
-                    ["display"] = "block"
-                });
+                this.ViewData["result"] = result.ToString();
+                this.ViewData["showCart"] = "none";
+                this.ViewData["display"] = "block";
+
+                return this.FileViewResponse(@"cake\search");
             }
 
-            return this.FileViewResponse(@"cake\search", new Dictionary<string, string>() { ["display"] = "none" });
+            this.ViewData["display"] = "none";
+            this.ViewData["showCart"] = "none";
+            return this.FileViewResponse(@"cake\search");
         }
     }
 }

@@ -9,7 +9,7 @@
         public void Start(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig
-                .Get("/", req => new HomeController().Index());
+                .Get("/", req => new HomeController().Index(req));
             appRouteConfig
                 .Get("/about", req => new HomeController().About());
             appRouteConfig
@@ -20,6 +20,11 @@
                 .Get("/search", req => new CakeController().Search(req.QueryParameters));
             appRouteConfig
                 .Get("/login", req => new UserController().Login());
+            appRouteConfig
+                .Post("/login", req => new UserController().Login(req));
+            appRouteConfig
+                .Get("/shopping/add/{{?<id>[0-9]+}}", req => new ShoppingController()
+                    .AddToCart(req.UrlParameters["id"]));
         }
     }
 }

@@ -8,6 +8,8 @@
     using Routing.Contracts;
     using System.Text.RegularExpressions;
 
+    using static Constants;
+
     public class HttpHandler : IRequestHandler
     {
         private readonly IServerRouteConfig serverRouteConfig;
@@ -20,34 +22,49 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            HttpRequestMethod requestMethod = httpContext.Request.RequestMethod;
-            string requestPath = httpContext.Request.Path;
-            var registeredRoutes = this.serverRouteConfig.Routes[requestMethod];
-
-            foreach (var registeredRoute in registeredRoutes)
+            try
             {
-                string routePattern = registeredRoute.Key;
-                IRoutingContext routingContext = registeredRoute.Value;
+                string loginPath = "/login";
 
-                Regex regex = new Regex(routePattern);
-                Match match = regex.Match(requestPath);
-
-
-                if (!match.Success)
+                if (httpContext.Request.Path != loginPath &&
+                    !httpContext.Request.Session.Containts(CurrentUserSessionKey))
                 {
-                    continue;
+                    return new RedirectResponse(loginPath);
                 }
 
-                var parameters = routingContext.Parameters;
+                HttpRequestMethod requestMethod = httpContext.Request.RequestMethod;
+                string requestPath = httpContext.Request.Path;
+                var registeredRoutes = this.serverRouteConfig.Routes[requestMethod];
 
-                foreach (string parameter in parameters)
+                foreach (var registeredRoute in registeredRoutes)
                 {
+                    string routePattern = registeredRoute.Key;
+                    IRoutingContext routingContext = registeredRoute.Value;
 
-                    string parameterValue = match.Groups[parameter].Value;
-                    httpContext.Request.AddUrlParameter(parameter, parameterValue);
+                    Regex regex = new Regex(routePattern);
+                    Match match = regex.Match(requestPath);
+
+
+                    if (!match.Success)
+                    {
+                        continue;
+                    }
+
+                    var parameters = routingContext.Parameters;
+
+                    foreach (string parameter in parameters)
+                    {
+
+                        string parameterValue = match.Groups[parameter].Value;
+                        httpContext.Request.AddUrlParameter(parameter, parameterValue);
+                    }
+
+                    return routingContext.RequestHandler.Handle(httpContext);
                 }
-
-                return routingContext.RequestHandler.Handle(httpContext);
+            }
+            catch
+            {
+                return new InternalServerErrorResponse();
             }
 
             return new NotFoundResponse();

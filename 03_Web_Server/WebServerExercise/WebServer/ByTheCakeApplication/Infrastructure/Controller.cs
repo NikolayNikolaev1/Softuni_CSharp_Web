@@ -11,22 +11,23 @@
     public abstract class Controller
     {
         public const string DefaultPath = @"..\..\..\ByTheCakeApplication\Resources\html\{0}.html";
+        protected const string DatabasePath = @"..\..\..\ByTheCakeApplication\Data\database.csv";
         public const string ContentPlaceholder = "{{{content}}}";
 
-        public IHttpResponse FileViewResponse(string fileName)
+        protected Controller()
         {
-            string result = this.ProcessFileHtml(fileName);
-
-            return new ViewResponse(HttpResponseStatusCode.OK, new FileView(result));
+            this.ViewData = new Dictionary<string, string>();
         }
 
-        public IHttpResponse FileViewResponse(string fileName, IDictionary<string, string> values)
+        protected IDictionary<string, string> ViewData { get; private set; }
+
+        protected IHttpResponse FileViewResponse(string fileName)
         {
             string result = this.ProcessFileHtml(fileName);
 
-            if (values != null && values.Any())
+            if (this.ViewData.Any())
             {
-                foreach (var value in values)
+                foreach (var value in this.ViewData)
                 {
                     result = result.Replace($"{{{{{{{value.Key}}}}}}}", value.Value);
                 }
