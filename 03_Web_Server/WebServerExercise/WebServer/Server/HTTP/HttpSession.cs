@@ -32,10 +32,10 @@
             }
         }
 
-        public void Add(string key, string value)
+        public void Add(string key, object value)
         {
             CoreValidator.ThrowIfNullOrEmpty(key, nameof(key));
-            CoreValidator.ThrowIfNullOrEmpty(value, nameof(value));
+            CoreValidator.ThrowIfNull(value, nameof(value));
             this.values[key] = value;
         }
 

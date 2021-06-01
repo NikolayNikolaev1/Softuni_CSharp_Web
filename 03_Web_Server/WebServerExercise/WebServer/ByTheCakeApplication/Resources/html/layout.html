@@ -9,6 +9,11 @@
     <title>By The Cake</title>
 </head>
 <body>
+    <div style="display: {{{showLogout}}}">
+        <form action="/logout" method="post">
+            <input type="submit" value="Logout" />
+        </form>
+    </div>
     {{{content}}}
     <pre style="background-color: deeppink">
 City: Hong Kong         City: Salzburg

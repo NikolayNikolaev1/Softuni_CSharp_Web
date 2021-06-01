@@ -1,24 +1,18 @@
 ﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
     using Infrastructure;
-    using Server.Enums;
+    using Models;
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
-    using Views;
 
     using static Server.Constants;
 
     public class UserController : Controller
     {
-        public IHttpResponse RegisterGet()
-            => new ViewResponse(HttpResponseStatusCode.OK, new RegisterView());
-
-        public IHttpResponse RegisterPost(string name)
-            => new RedirectResponse($"/user/{name}");
-
         public IHttpResponse Login()
         {
             this.ViewData["showError"] = "none";
+            this.ViewData["showLogout"] = "none";
             return this.FileViewResponse(@"user\login");
         }
 
@@ -45,8 +39,15 @@
             }
 
             request.Session.Add(CurrentUserSessionKey, name);
+            request.Session.Add(ShoppingCart.SessionKey, new ShoppingCart());
 
             return new RedirectResponse("/");
+        }
+
+        public IHttpResponse Logout(IHttpRequest request)
+        {
+            request.Session.Clear();
+            return new RedirectResponse("/login");
         }
     }
 }

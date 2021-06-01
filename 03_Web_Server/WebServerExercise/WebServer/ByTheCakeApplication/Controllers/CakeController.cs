@@ -7,6 +7,7 @@
     using System.IO;
     using System.Text;
     using System;
+    using System.Linq;
 
     public class CakeController : Controller
     {
@@ -42,8 +43,10 @@
             return this.FileViewResponse(@"cake\add");
         }
 
-        public IHttpResponse Search(IDictionary<string, string> parameters)
+        public IHttpResponse Search(IHttpRequest request)
         {
+            IDictionary<string, string> parameters = request.QueryParameters;
+
             if (parameters.ContainsKey("name"))
             {
                 string name = parameters["name"];
@@ -75,8 +78,19 @@
                 return this.FileViewResponse(@"cake\search");
             }
 
-            this.ViewData["display"] = "none";
+            var shoppingCart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
             this.ViewData["showCart"] = "none";
+            this.ViewData["display"] = "none";
+
+            if (shoppingCart.Orders.Any())
+            {
+                int totalProducts = shoppingCart.Orders.Count;
+                string totalProductsText = totalProducts != 1 ? "products" : "product";
+
+                this.ViewData["showCart"] = "block";
+                this.ViewData["productCount"] = $"{totalProducts} {totalProductsText}";
+            }
+
             return this.FileViewResponse(@"cake\search");
         }
     }

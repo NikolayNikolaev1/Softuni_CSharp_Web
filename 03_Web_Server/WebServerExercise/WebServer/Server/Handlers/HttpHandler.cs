@@ -6,6 +6,7 @@
     using HTTP.Contracts;
     using HTTP.Response;
     using Routing.Contracts;
+    using System;
     using System.Text.RegularExpressions;
 
     using static Constants;
@@ -62,9 +63,9 @@
                     return routingContext.RequestHandler.Handle(httpContext);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return new InternalServerErrorResponse();
+                return new InternalServerErrorResponse(ex);
             }
 
             return new NotFoundResponse();

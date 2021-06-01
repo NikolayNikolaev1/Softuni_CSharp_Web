@@ -1,46 +1,72 @@
 ﻿namespace WebServer.ByTheCakeApplication.Controllers
 {
+    using Data;
     using Infrastructure;
     using Models;
     using Server.HTTP.Contracts;
-    using System.Collections.Generic;
-    using System.IO;
-    using WebServer.Server.HTTP.Response;
+    using Server.HTTP.Response;
+    using System.Linq;
+    using System.Text;
 
     public class ShoppingController : Controller
     {
-        private IList<Cake> cart = new List<Cake>();
+        private CakesData cakesData;
 
-        public IHttpResponse AddToCart(string id)
+        public ShoppingController()
         {
-            using (StreamReader reader = new StreamReader(DatabasePath))
+            this.cakesData = new CakesData();
+        }
+
+        public IHttpResponse AddToCart(IHttpRequest request)
+        {
+            int id = int.Parse(request.UrlParameters["id"]);
+            Cake cake = this.cakesData.Find(id);
+
+            if (cake == null)
             {
-                string cake;
-                while ((cake = reader.ReadLine()) != null)
-                {
-                    string[] cakeArgs = cake.Split(',');
-                    string cakeId = cakeArgs[0];
-                    string cakeName = cakeArgs[1];
-                    string cakePrice = cakeArgs[2];
-
-                    if (cakeId == id)
-                    {
-                        cart.Add(new Cake
-                        {
-                            Id = int.Parse(cakeId),
-                            Name = cakeName,
-                            Price = decimal.Parse(cakePrice)
-                        });
-
-                        break;
-                    }
-                }
+                return new NotFoundResponse();
             }
 
-            this.ViewData["productCount"] = cart.Count.ToString();
-            this.ViewData["showCart"] = "block";
+            request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey).Orders.Add(cake);
 
-            return this.FileViewResponse(@"cake\search");
+            return new RedirectResponse("/search");
+
         }
+
+        public IHttpResponse Index(IHttpRequest request)
+        {
+            StringBuilder resultHtml = new StringBuilder();
+            decimal totalPrice = 0;
+            ShoppingCart cart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
+
+
+            if (!cart.Orders.Any())
+            {
+                this.ViewData["result"] = "No items in cart";
+                this.ViewData["resultTotal"] = $"Total Cost: $0.00";
+            }
+            else
+            {
+                foreach (Cake cake in cart.Orders)
+                {
+                    resultHtml.AppendLine($"<div>{cake.Name} - ${cake.Price}</div>");
+                    totalPrice += cake.Price;
+                }
+                this.ViewData["result"] = resultHtml.ToString();
+                this.ViewData["resultTotal"] = $"Total Cost: ${totalPrice}";
+            }
+
+
+            return this.FileViewResponse(@"order\cart-index");
+        }
+
+        public IHttpResponse Order(IHttpRequest request)
+        {
+            request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey).Orders.Clear();
+            return new RedirectResponse("/success");
+        }
+
+        public IHttpResponse Success()
+            => this.FileViewResponse(@"order\success");
     }
 }

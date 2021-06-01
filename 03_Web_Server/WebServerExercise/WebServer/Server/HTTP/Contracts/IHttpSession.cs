@@ -4,7 +4,7 @@
     {
         string Id { get; }
 
-        void Add(string key, string value);
+        void Add(string key, object value);
 
         void Clear();
 

@@ -11,12 +11,13 @@
     public abstract class Controller
     {
         public const string DefaultPath = @"..\..\..\ByTheCakeApplication\Resources\html\{0}.html";
-        protected const string DatabasePath = @"..\..\..\ByTheCakeApplication\Data\database.csv";
+        public const string DatabasePath = @"..\..\..\ByTheCakeApplication\Data\database.csv";
         public const string ContentPlaceholder = "{{{content}}}";
 
         protected Controller()
         {
             this.ViewData = new Dictionary<string, string>();
+            this.ViewData["showLogout"] = "block";
         }
 
         protected IDictionary<string, string> ViewData { get; private set; }

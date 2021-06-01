@@ -1,12 +1,11 @@
 ﻿namespace WebServer.Server.HTTP.Response
 {
+    using Core;
     using Enums;
 
-    public class NotFoundResponse : HttpResponse
+    public class NotFoundResponse : ViewResponse
     {
         public NotFoundResponse()
-        {
-            this.StatusCode = HttpResponseStatusCode.NotFound;
-        }
+            : base(HttpResponseStatusCode.NotFound, new NotFoundView()) { }
     }
 }

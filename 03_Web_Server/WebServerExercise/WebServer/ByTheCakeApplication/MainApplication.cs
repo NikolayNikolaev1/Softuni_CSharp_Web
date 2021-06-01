@@ -17,14 +17,21 @@
             appRouteConfig
                 .Post("/add", req => new CakeController().Add(req.FormData["name"], req.FormData["price"]));
             appRouteConfig
-                .Get("/search", req => new CakeController().Search(req.QueryParameters));
+                .Get("/search", req => new CakeController().Search(req));
             appRouteConfig
                 .Get("/login", req => new UserController().Login());
             appRouteConfig
                 .Post("/login", req => new UserController().Login(req));
             appRouteConfig
-                .Get("/shopping/add/{{?<id>[0-9]+}}", req => new ShoppingController()
-                    .AddToCart(req.UrlParameters["id"]));
+                .Post("/logout", req => new UserController().Logout(req));
+            appRouteConfig
+                .Get("/shopping/add/{(?<id>[0-9]+)}", req => new ShoppingController().AddToCart(req));
+            appRouteConfig
+                .Get("/cart", req => new ShoppingController().Index(req));
+            appRouteConfig
+                .Get("/success", req => new ShoppingController().Success());
+            appRouteConfig
+                .Post("/order", req => new ShoppingController().Order(req));
         }
     }
 }
