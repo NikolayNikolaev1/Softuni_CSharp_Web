@@ -1,29 +1,29 @@
-﻿namespace WebServer.ByTheCakeApplication
+﻿namespace ByTheCake.Application.Infrastructure
 {
     using Controllers;
-    using Server.Contracts;
-    using Server.Routing.Contracts;
+    using WebServer.Server.Contracts;
+    using WebServer.Server.Routing.Contracts;
 
     public class MainApplication : IApplication
     {
         public void Start(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig
-                .Get("/", req => new HomeController().Index(req));
+                .Get("/", req => new HomeController().Index());
             appRouteConfig
                 .Get("/about", req => new HomeController().About());
-            appRouteConfig
-                .Get("/add", req => new CakeController().Add());
-            appRouteConfig
-                .Post("/add", req => new CakeController().Add(req.FormData["name"], req.FormData["price"]));
-            appRouteConfig
-                .Get("/search", req => new CakeController().Search(req));
             appRouteConfig
                 .Get("/login", req => new UserController().Login());
             appRouteConfig
                 .Post("/login", req => new UserController().Login(req));
             appRouteConfig
                 .Post("/logout", req => new UserController().Logout(req));
+            appRouteConfig
+                .Get("/add", req => new CakeController().Add());
+            appRouteConfig
+                .Post("/add", req => new CakeController().Add(req));
+            appRouteConfig
+                .Get("/search", req => new CakeController().Search(req));
             appRouteConfig
                 .Get("/shopping/add/{(?<id>[0-9]+)}", req => new ShoppingController().AddToCart(req));
             appRouteConfig

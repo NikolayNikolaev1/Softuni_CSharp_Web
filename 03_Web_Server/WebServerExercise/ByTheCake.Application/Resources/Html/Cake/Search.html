@@ -1,16 +1,16 @@
 ﻿<a href="/">Back to home</a>
 
 <form action="/search" method="get">
-    <input type="text" name="name" />
+    <input type="text" name="searchTerm" />
     <input type="submit" value="Search" />
 </form>
 
 <div style="display: {{{showCart}}}">
     <a href="/cart">Your Cart: </a>
-{{{productCount}}}
+    {{{productCount}}}
 </div>
 
 
-<div style="display: {{{display}}}">
+<div style="display: {{{showResult}}}">
     {{{result}}}
 </div>

@@ -1,12 +1,12 @@
-﻿namespace WebServer.ByTheCakeApplication.Controllers
+﻿namespace ByTheCake.Application.Controllers
 {
     using Data;
     using Infrastructure;
     using Models;
-    using Server.HTTP.Contracts;
-    using Server.HTTP.Response;
     using System.Linq;
     using System.Text;
+    using WebServer.Server.HTTP.Contracts;
+    using WebServer.Server.HTTP.Response;
 
     public class ShoppingController : Controller
     {
@@ -57,7 +57,7 @@
             }
 
 
-            return this.FileViewResponse(@"order\cart-index");
+            return this.FileViewResponse(@"Order\Cart");
         }
 
         public IHttpResponse Order(IHttpRequest request)
@@ -67,6 +67,6 @@
         }
 
         public IHttpResponse Success()
-            => this.FileViewResponse(@"order\success");
+            => this.FileViewResponse(@"Order\Success");
     }
 }
