@@ -1,73 +1,91 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
+    using ByTheCake.Data;
     using Models;
     using Core;
     using Infrastructure;
+    using Providers;
+    using Providers.Contracts;
     using System.Collections.Generic;
-    using System.IO;
-    using System;
     using System.Text;
     using System.Linq;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
+    using static Core.Constants.ClientErrorMessage;
+    using static Core.Constants.FilePath;
+    using static Core.Constants.ViewDataProperty;
+    using ByTheCake.Models;
+
     public class CakeController : Controller
     {
-        private static IList<Cake> cakes = new List<Cake>();
+        private IUnitOfWork unitOfWork;
+
+        public CakeController(ByTheCakeDbContext dbContext)
+        {
+            this.unitOfWork = new UnitOfWork(dbContext);
+            this.ViewData[Key.Error] = Value.None;
+            this.ViewData[Key.Result] = Value.None;
+            this.ViewData[Key.Cart] = Value.None;
+        }
 
         public IHttpResponse Add()
-        {
-            this.ViewData["showResult"] = "none";
-            this.ViewData["showError"] = "none";
-            return this.FileViewResponse(@"Cake\Add");
-        }
+            => this.FileViewResponse(CakeAdd);
 
         public IHttpResponse Add(IHttpRequest request)
         {
             const string formNameKey = "name";
             const string formPriceKey = "price";
+            const string formPictureKey = "picture";
 
-            if (CoreValidator.CheckForMissingKeys(request, formNameKey, formPriceKey))
+            if (CoreValidator.CheckForMissingKeys(request, formNameKey, formPriceKey, formPictureKey))
             {
                 return new BadRequestResponse();
             }
 
             string name = request.FormData[formNameKey];
             string price = request.FormData[formPriceKey];
+            string pictureUrl = request.FormData[formPictureKey];
 
-            if (CoreValidator.CheckIfNullOrEmpty(name, price))
+            if (CoreValidator.CheckIfNullOrEmpty(name, price, pictureUrl))
             {
-                this.ViewData["showResult"] = "none";
-                this.ViewData["showError"] = "block";
-                this.ViewData["error"] = "You have empty fields";
-
-                return this.FileViewResponse(@"Cake\Add");
+                return this.ReturnResponseWithErrorMessage(EmptyFields, CakeAdd);
             }
 
-            cakes.Add(new Cake
+            Product product = new Product
             {
                 Name = name,
-                Price = decimal.Parse(price)
-            });
+                Price = decimal.Parse(price),
+                ImageUrl = pictureUrl
+            };
 
-            StreamReader reader = new StreamReader(DatabasePath);
-            int id = reader
-                .ReadToEnd()
-                .Split(Environment.NewLine)
-                .Length;
-            reader.Dispose();
+            this.unitOfWork.ProductRepository.Add(product);
+            this.unitOfWork.Save();
 
-            using (StreamWriter writer = new StreamWriter(DatabasePath, true))
-            {
-                writer.WriteLine($"{id},{name},{price}");
-            }
-
-            this.ViewData["showError"] = "none";
             this.ViewData["name"] = name;
             this.ViewData["price"] = price;
-            this.ViewData["showResult"] = "block";
+            this.ViewData[Key.Result] = Value.Block;
 
-            return this.FileViewResponse(@"Cake\Add");
+            return this.FileViewResponse(CakeAdd);
+        }
+
+        public IHttpResponse Details(IHttpRequest request)
+        {
+            int cakeId = int.Parse(request.UrlParameters["id"]);
+            Product cake = unitOfWork
+                .ProductRepository
+                .Find(cakeId);
+
+            if (cake == null)
+            {
+                return new BadRequestResponse();
+            }
+
+            this.ViewData["name"] = cake.Name;
+            this.ViewData["price"] = cake.Price.ToString();
+            this.ViewData["picture"] = cake.ImageUrl;
+
+            return this.FileViewResponse(CakeDetails);
         }
 
         public IHttpResponse Search(IHttpRequest request)
@@ -79,50 +97,36 @@
             if (parameters.ContainsKey(formSearchTermKey))
             {
                 string searchTerm = parameters[formSearchTermKey];
-
                 StringBuilder result = new StringBuilder();
-                string cakeName = string.Empty;
-                string cakePrice = string.Empty;
+                IList<Product> productsFound = this.unitOfWork
+                    .ProductRepository
+                    .Search(searchTerm)
+                    .ToList();
 
-                using (StreamReader reader = new StreamReader(DatabasePath))
+                foreach (Product product in productsFound)
                 {
-                    string cake;
-
-                    while ((cake = reader.ReadLine()) != null)
-                    {
-                        string cakeId = cake.Split(',')[0];
-                        cakeName = cake.Split(',')[1];
-                        cakePrice = cake.Split(',')[2];
-
-                        if (cakeName.Contains(searchTerm))
-                        {
-                            result.AppendLine($@"<div>{cakeName} ${cakePrice} <a href=""/shopping/add/{cakeId}"">Order</a></div>");
-                        }
-                    }
+                    result.AppendLine(
+                        $@"<div><a href=""/cakeDetails/{product.Id}"">{product.Name}</a> ${product.Price} <a href=""/shopping/add/{product.Id}"">Order</a></div>");
                 }
 
                 this.ViewData["result"] = result.ToString();
-                this.ViewData["showCart"] = "none";
-                this.ViewData["showResult"] = "block";
+                this.ViewData[Key.Result] = Value.Block;
 
-                return this.FileViewResponse(@"Cake\Search");
+                return this.FileViewResponse(CakeSearch);
             }
 
             ShoppingCart cart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
-
-            this.ViewData["showCart"] = "none";
-            this.ViewData["showResult"] = "none";
 
             if (cart.Orders.Any())
             {
                 int totalProducts = cart.Orders.Count;
                 string totalProductsText = totalProducts != 1 ? "products" : "product";
 
-                this.ViewData["showCart"] = "block";
+                this.ViewData[Key.Cart] = Value.Block;
                 this.ViewData["productCount"] = $"{totalProducts} {totalProductsText}";
             }
 
-            return this.FileViewResponse(@"Cake\Search");
+            return this.FileViewResponse(CakeSearch);
         }
     }
 }

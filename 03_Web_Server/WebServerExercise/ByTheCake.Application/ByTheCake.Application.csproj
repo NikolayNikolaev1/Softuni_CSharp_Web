@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ByTheCake.Data\ByTheCake.Data.csproj" />
+    <ProjectReference Include="..\ByTheCake.Repositories\ByTheCake.Providers.csproj" />
     <ProjectReference Include="..\WebServer\WebServer.csproj" />
   </ItemGroup>
 

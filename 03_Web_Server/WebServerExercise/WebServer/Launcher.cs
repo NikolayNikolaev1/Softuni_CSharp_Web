@@ -1,6 +1,5 @@
 ﻿namespace WebServer
 {
-    using ByTheCakeApplication;
     using CalculatorApplication;
     using LoginApplication;
     using Server;
@@ -18,7 +17,7 @@
 
         public void Run()
         {
-            IApplication app = new MainApplication();
+            IApplication app = new CalculatorApp();
             IAppRouteConfig routeConfig = new AppRouteConfig();
             app.Start(routeConfig);
 

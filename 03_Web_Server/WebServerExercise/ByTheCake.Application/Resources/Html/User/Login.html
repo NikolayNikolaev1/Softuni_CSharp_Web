@@ -3,15 +3,24 @@
 <form action="/login" method="post">
     <div>
         <label>Name: </label>
-        <input type="text" name="name" />
+        <input type="text" name="username" />
     </div>
+    <br />
     <div>
         <label>Password: </label>
         <input type="password" name="password" />
     </div>
+    <br />
     <input type="submit" value="Login" />
 </form>
 
 <div style="color: red; display: {{{showError}}}">
     {{{error}}}
 </div>
+
+<br />
+
+<form action="/register" method="get">
+    <label>Don't have an account?</label>
+    <input type="submit" value="register" />
+</form>

@@ -13,7 +13,7 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=.;Database=ByTheCakeDb;Integrated Security=True;");
+            optionsBuilder.UseSqlServer(@"Server=HP-ELITEBOOK\SQLEXPRESS;Database=ByTheCakeDb;Integrated Security=True;");
 
             base.OnConfiguring(optionsBuilder);
         }

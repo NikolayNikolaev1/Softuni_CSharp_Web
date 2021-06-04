@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using WebServer.ByTheCakeApplication.Views;
+    using Views;
     using WebServer.Server.Enums;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
@@ -29,6 +29,14 @@
             }
 
             return new ViewResponse(HttpResponseStatusCode.OK, new FileView(result));
+        }
+
+        protected IHttpResponse ReturnResponseWithErrorMessage(string errorMessage, string filePath)
+        {
+            this.ViewData["showError"] = "block";
+            this.ViewData["error"] = errorMessage;
+
+            return this.FileViewResponse(filePath);
         }
 
         private string ProccessFileHtml(string fileName)

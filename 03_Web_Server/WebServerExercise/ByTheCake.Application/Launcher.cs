@@ -1,6 +1,6 @@
 ﻿namespace ByTheCake.Application
 {
-    using Infrastructure;
+    using ByTheCake.Data;
     using WebServer.Server;
     using WebServer.Server.Contracts;
     using WebServer.Server.Routing;
@@ -17,12 +17,18 @@
 
         public void Run()
         {
-            IApplication app = new MainApplication();
-            IAppRouteConfig routeConfig = new AppRouteConfig();
-            app.Start(routeConfig);
+            using (ByTheCakeDbContext dbContext = new ByTheCakeDbContext())
+            {
+                //dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
 
-            this.webServer = new WebServer(Port, routeConfig);
-            this.webServer.Run();
+                IApplication app = new MainApplication(dbContext);
+                IAppRouteConfig routeConfig = new AppRouteConfig();
+                app.Start(routeConfig);
+
+                this.webServer = new WebServer(Port, routeConfig);
+                this.webServer.Run();
+            }
         }
     }
 }

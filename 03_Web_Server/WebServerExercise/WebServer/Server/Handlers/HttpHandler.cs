@@ -26,8 +26,10 @@
             try
             {
                 string loginPath = "/login";
+                string registerPath = "/register";
 
                 if (httpContext.Request.Path != loginPath 
+                    && httpContext.Request.Path != registerPath
                     && !httpContext.Request.Session.Containts(CurrentUserSessionKey))
                 {
                     return new RedirectResponse(loginPath);

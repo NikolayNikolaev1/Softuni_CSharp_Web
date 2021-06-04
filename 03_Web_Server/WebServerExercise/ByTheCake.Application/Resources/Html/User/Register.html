@@ -1,0 +1,29 @@
+﻿<h2>Register</h2>
+
+<form action="/register" method="post">
+    <div>
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Username" />
+    </div>
+    <br />
+    <div>
+        <label>Full Name</label>
+        <input type="text" name="full-name" placeholder="Full Name" />
+    </div>
+    <br />
+    <div>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Password" />
+    </div>
+    <br />
+    <div>
+        <label>Confirm Password</label>
+        <input type="password" name="confirm-password" placeholder="Confirm Password" />
+    </div>
+    <br />
+    <input type="submit" value="Register" />
+</form>
+
+<div style="color: red; display: {{{showError}}}">
+    {{{error}}}
+</div>
