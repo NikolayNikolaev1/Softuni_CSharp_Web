@@ -4,6 +4,6 @@
 
     public interface IOrderRepository : IRepository<Order>
     {
-
+        decimal GetOrderTotalPrice(int id);
     }
 }

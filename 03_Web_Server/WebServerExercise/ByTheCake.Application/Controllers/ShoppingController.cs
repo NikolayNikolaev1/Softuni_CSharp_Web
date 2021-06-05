@@ -1,26 +1,35 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
+    using ByTheCake.Data;
+    using ByTheCake.Models;
     using Data;
     using Infrastructure;
     using Models;
+    using Providers;
+    using Providers.Contracts;
+    using System;
     using System.Linq;
     using System.Text;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
+    using static WebServer.Server.Constants;
+
     public class ShoppingController : Controller
     {
+        private IUnitOfWork unityOfWork;
         private CakesData cakesData;
 
-        public ShoppingController()
+        public ShoppingController(ByTheCakeDbContext dbContext)
         {
+            this.unityOfWork = new UnitOfWork(dbContext);
             this.cakesData = new CakesData();
         }
 
         public IHttpResponse AddToCart(IHttpRequest request)
         {
-            int id = int.Parse(request.UrlParameters["id"]);
-            Cake cake = this.cakesData.Find(id);
+            int cakeId = int.Parse(request.UrlParameters["id"]);
+            Product cake = unityOfWork.ProductRepository.Find(cakeId);
 
             if (cake == null)
             {
@@ -30,40 +39,32 @@
             request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey).Orders.Add(cake);
 
             return new RedirectResponse("/search");
-
         }
 
         public IHttpResponse Index(IHttpRequest request)
         {
             StringBuilder resultHtml = new StringBuilder();
-            decimal totalPrice = 0;
             ShoppingCart cart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
-
+            decimal totalPrice = 0;
 
             if (!cart.Orders.Any())
             {
                 this.ViewData["result"] = "No items in cart";
-                this.ViewData["resultTotal"] = $"Total Cost: $0.00";
+                this.ViewData["resultTotal"] = "0.00";
             }
             else
             {
-                foreach (Cake cake in cart.Orders)
+                foreach (Product cake in cart.Orders)
                 {
                     resultHtml.AppendLine($"<div>{cake.Name} - ${cake.Price}</div>");
                     totalPrice += cake.Price;
                 }
+
                 this.ViewData["result"] = resultHtml.ToString();
-                this.ViewData["resultTotal"] = $"Total Cost: ${totalPrice}";
+                this.ViewData["resultTotal"] = totalPrice.ToString();
             }
 
-
             return this.FileViewResponse(@"Order\Cart");
-        }
-
-        public IHttpResponse Order(IHttpRequest request)
-        {
-            request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey).Orders.Clear();
-            return new RedirectResponse("/success");
         }
 
         public IHttpResponse Success()

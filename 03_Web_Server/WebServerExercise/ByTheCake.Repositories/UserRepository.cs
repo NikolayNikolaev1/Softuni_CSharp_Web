@@ -2,6 +2,7 @@
 {
     using Contracts;
     using Data;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using System.Linq;
 
@@ -14,6 +15,8 @@
             => this.context
             .Users
             .Where(u => u.Username == username)
+            .Include(u => u.Orders)
             .FirstOrDefault();
+
     }
 }

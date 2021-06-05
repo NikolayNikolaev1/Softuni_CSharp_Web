@@ -41,13 +41,17 @@
             appRouteConfig
                 .Get("/search", req => new CakeController(this.context).Search(req));
             appRouteConfig
-                .Get("/shopping/add/{(?<id>[0-9]+)}", req => new ShoppingController().AddToCart(req));
+                .Get("/shopping/add/{(?<id>[0-9]+)}", req => new ShoppingController(this.context).AddToCart(req));
             appRouteConfig
-                .Get("/cart", req => new ShoppingController().Index(req));
+                .Get("/cart", req => new ShoppingController(this.context).Index(req));
             appRouteConfig
-                .Get("/success", req => new ShoppingController().Success());
+                .Get("/success", req => new ShoppingController(this.context).Success());
             appRouteConfig
-                .Post("/order", req => new ShoppingController().Order(req));
+                .Post("/order", req => new OrderController(this.context).Make(req));
+            appRouteConfig
+                .Get("/orders", req => new OrderController(this.context).List(req));
+            appRouteConfig
+                .Get("/orderDetails/{(?<id>[0-9]+)}", req => new OrderController(this.context).Details(req));
         }
     }
 }
