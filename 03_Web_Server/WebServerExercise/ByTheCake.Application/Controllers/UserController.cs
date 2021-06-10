@@ -1,13 +1,12 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
-    using ByTheCake.Data;
-    using ByTheCake.Models;
     using Core;
+    using Data;
     using Infrastructure;
     using Models;
+    using Models.ViewModels;
     using Providers;
     using Providers.Contracts;
-    using System;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
@@ -34,29 +33,28 @@
         public IHttpResponse Login()
             => this.FileViewResponse(UserLogin);
 
-        public IHttpResponse Login(IHttpRequest request)
+        public IHttpResponse Login(IHttpRequest request, LoginUserViewModel model)
         {
             if (CoreValidator.CheckForMissingKeys(request, FormUserNameKey, FormPasswordKey))
             {
                 return new BadRequestResponse();
             }
 
-            string username = request.FormData[FormUserNameKey];
-            string password = request.FormData[FormPasswordKey];
-
-            if (CoreValidator.CheckIfNullOrEmpty(username, password))
+            if (CoreValidator.CheckIfNullOrEmpty(model.Username, model.Password))
             {
                 return this.ReturnResponseWithErrorMessage(EmptyFields, UserLogin);
             }
 
-            User currentUser = this.unitOfWork.UserRepository.FindByUsername(username);
+            User currentUser = this.unitOfWork
+                .UserRepository
+                .FindByUsername(model.Username);
 
-            if (currentUser == null || currentUser.Password != password)
+            if (currentUser == null || currentUser.Password != model.Password)
             {
                 return this.ReturnResponseWithErrorMessage("User does not exist. Register a new user.", UserLogin);
             }
 
-            request.Session.Add(CurrentUserSessionKey, currentUser);
+            request.Session.Add(CurrentUserSessionKey, model.Username);
             request.Session.Add(ShoppingCart.SessionKey, new ShoppingCart());
 
             return new RedirectResponse("/");
@@ -71,46 +69,35 @@
         public IHttpResponse Register()
             => this.FileViewResponse(UserRegister);
 
-        public IHttpResponse Register(IHttpRequest request)
+        public IHttpResponse Register(IHttpRequest request, RegisterUserViewModel model)
         {
             if (CoreValidator.CheckForMissingKeys(request, FormUserNameKey, FormFullNameKey, FormPasswordKey, FormConfirmPasswordKey))
             {
                 return new BadRequestResponse();
             }
 
-            string username = request.FormData[FormUserNameKey];
-            string fullName = request.FormData[FormFullNameKey];
-            string password = request.FormData[FormPasswordKey];
-            string confirmPassword = request.FormData[FormConfirmPasswordKey];
-
-            if (CoreValidator.CheckIfNullOrEmpty(username, fullName, password, confirmPassword))
+            if (CoreValidator.CheckIfNullOrEmpty(model.Username, model.FullName, model.Password, model.ConfirmPassword))
             {
                 return this.ReturnResponseWithErrorMessage(EmptyFields, UserRegister);
             }
 
-            if (password != confirmPassword)
+            if (model.Password != model.ConfirmPassword)
             {
                 return this.ReturnResponseWithErrorMessage("Pasword and Confirm Password does not match.", UserRegister);
             }
 
-            if (this.unitOfWork.UserRepository.FindByUsername(username) != null)
+            if (this.unitOfWork.UserRepository.FindByUsername(model.Username) != null)
             {
                 return this.ReturnResponseWithErrorMessage("Username already exists.", UserRegister);
             }
 
-            User user = new User
-            {
-                Username = username,
-                Name = fullName,
-                Password = password,
-                RegisterDate = DateTime.Now
-            };
-
+            User user = this.unitOfWork
+                .UserRepository
+                .Create(model.Username, model.FullName, model.Password);
             this.unitOfWork.UserRepository.Add(user);
-
             this.unitOfWork.Save();
 
-            request.Session.Add(CurrentUserSessionKey, user);
+            request.Session.Add(CurrentUserSessionKey, model.Username);
             request.Session.Add(ShoppingCart.SessionKey, new ShoppingCart());
 
             return new RedirectResponse("/");
@@ -118,13 +105,16 @@
 
         public IHttpResponse Profile(IHttpRequest request)
         {
-            User currentUser = request.Session.Get<User>(CurrentUserSessionKey);
+            string currentUserName = request.Session.GetParameter(CurrentUserSessionKey).ToString();
+            ProfileViewModel model = this.unitOfWork
+                .UserRepository
+                .Profile(currentUserName);
 
             this.ViewData[Key.Logout] = Value.Block;
-            this.ViewData["username"] = currentUser.Username;
-            this.ViewData["fullName"] = currentUser.Name;
-            this.ViewData["registeredOn"] = currentUser.RegisterDate.ToString("dd-MM-yyyy");
-            this.ViewData["ordersCount"] = currentUser.Orders.Count.ToString();
+            this.ViewData["username"] = model.Username;
+            this.ViewData["fullName"] = model.FullName;
+            this.ViewData["registeredOn"] = model.RegistrationDate.ToString("dd-MM-yyyy");
+            this.ViewData["ordersCount"] = model.TotalOrders.ToString();
 
             return this.FileViewResponse(UserProfile);
         }

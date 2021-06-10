@@ -1,7 +1,8 @@
 ﻿namespace ByTheCake.Application
 {
-    using ByTheCake.Data;
     using Controllers;
+    using Data;
+    using Models.ViewModels;
     using WebServer.Server.Contracts;
     using WebServer.Server.Routing.Contracts;
 
@@ -23,11 +24,23 @@
             appRouteConfig
                 .Get("/register", req => new UserController(this.context).Register());
             appRouteConfig
-                .Post("/register", req => new UserController(this.context).Register(req));
+                .Post("/register", req => new UserController(this.context)
+                    .Register(req, new RegisterUserViewModel
+                    { 
+                        Username = req.FormData["username"],
+                        FullName = req.FormData["full-name"],
+                        Password = req.FormData["password"],
+                        ConfirmPassword = req.FormData["confirm-password"]
+                    }));
             appRouteConfig
                 .Get("/login", req => new UserController(this.context).Login());
             appRouteConfig
-                .Post("/login", req => new UserController(this.context).Login(req));
+                .Post("/login", req => new UserController(this.context)
+                    .Login(req, new LoginUserViewModel
+                    {
+                        Username = req.FormData["username"],
+                        Password = req.FormData["password"]
+                    }));
             appRouteConfig
                 .Post("/logout", req => new UserController(this.context).Logout(req));
             appRouteConfig
@@ -35,7 +48,13 @@
             appRouteConfig
                 .Get("/add", req => new CakeController(this.context).Add());
             appRouteConfig
-                .Post("/add", req => new CakeController(this.context).Add(req));
+                .Post("/add", req => new CakeController(this.context)
+                    .Add(req, new CreateCakeViewModel
+                    { 
+                        Name = req.FormData["name"],
+                        Price = decimal.Parse(req.FormData["price"]),
+                        PictureUrl = req.FormData["picture"]
+                    }));
             appRouteConfig
                 .Get("/cakeDetails/{(?<id>[0-9]+)}", req => new CakeController(this.context).Details(req));
             appRouteConfig

@@ -1,18 +1,19 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
+    using Data;
     using Infrastructure;
     using Models;
-    using ByTheCake.Data;
-    using ByTheCake.Models;
+    using Models.ViewModels;
     using Providers;
     using Providers.Contracts;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
     using static WebServer.Server.Constants;
-    using System.Text;
 
     public class OrderController : Controller
     {
@@ -27,25 +28,29 @@
         {
             StringBuilder result = new StringBuilder();
             int orderId = int.Parse(request.UrlParameters["id"]);
-            Order order = unityOfWork.OrderRepository.Find(orderId);
+            OrderDetailsViewModel orderModel = this.unityOfWork
+                .OrderRepository
+                .Details(orderId);
 
-            if (order == null)
+            if (orderModel == null)
             {
                 return new BadRequestResponse();
             }
 
-            foreach (OrderProduct orderProduct in order.Products)
+            foreach (Product product in orderModel.Products)
             {
+
                 result.Append($@"
 <tr>
-    <th><a href=""/cakeDetails/{orderProduct.ProductId}"">{orderProduct.Product.Name}</a></th>
-    <th>${order.Products.Sum(o => o.Product.Price * o.ProductCount)}</th>
+    <th><a href=""/cakeDetails/{product.Id}"">{product.Name}</a></th>
+    <th>${product.Price.ToString("F2")}</th>
 </tr>");
             }
 
+
             this.ViewData["orderId"] = orderId.ToString();
             this.ViewData["result"] = result.ToString();
-            this.ViewData["createdOn"] = order.CreationDate.ToString("dd-MM-yyyy");
+            this.ViewData["createdOn"] = orderModel.CreatedOn.ToString("dd-MM-yyyy");
 
             return this.FileViewResponse(@"Order\Details");
         }
@@ -53,25 +58,27 @@
         public IHttpResponse List(IHttpRequest request)
         {
             StringBuilder result = new StringBuilder();
-            int currentUserId = request.Session.Get<User>(CurrentUserSessionKey).Id;
-            var currentUser = unityOfWork.UserRepository.Find(currentUserId);
-            var userOrders = currentUser
-                .Orders
-                .Select(o => new
-            {
-                OrderId = o.Id,
-                CreatedOn = o.CreationDate.ToString("dd-MM-yyyy"),
-                Sum = o.Products.Sum(p => p.Product.Price * p.ProductCount)
-            }).OrderByDescending(o => o.CreatedOn)
-            .ToList();
+            string currentUserName = request
+                .Session
+                .GetParameter(CurrentUserSessionKey)
+                .ToString();
 
-            foreach (var order in userOrders)
+            User currentUser = this.unityOfWork
+                .UserRepository
+                .FindByUsername(currentUserName);
+
+            IList<OrderListingViewModel> ordersModel = this.unityOfWork
+                .OrderRepository
+                .GetAll(currentUser.Id)
+                .ToList();
+
+            foreach (var order in ordersModel)
             {
                 result.Append($@"
 <tr>
-    <th><a href=""/orderDetails/{order.OrderId}"">{order.OrderId}</a></th>
-    <th>{order.CreatedOn}</th>
-    <th>{order.Sum}</th>
+    <th><a href=""/orderDetails/{order.Id}"">{order.Id}</a></th>
+    <th>{order.CreatedOn.ToString("dd-MM-yyyy")}</th>
+    <th>${order.TotalSum.ToString("F2")}</th>
 </tr>");
             }
 
@@ -82,8 +89,16 @@
 
         public IHttpResponse Make(IHttpRequest request)
         {
-            User currentUser = request.Session.Get<User>(CurrentUserSessionKey);
-            ShoppingCart cart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
+            string currentUserName = request
+                .Session
+                .GetParameter(CurrentUserSessionKey)
+                .ToString();
+            User currentUser = this.unityOfWork
+                .UserRepository
+                .FindByUsername(currentUserName);
+            ShoppingCart cart = request
+                .Session
+                .Get<ShoppingCart>(ShoppingCart.SessionKey);
 
             Order order = new Order
             {

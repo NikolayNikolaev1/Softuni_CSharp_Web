@@ -1,29 +1,23 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
-    using ByTheCake.Data;
-    using ByTheCake.Models;
     using Data;
     using Infrastructure;
     using Models;
+    using Models.ViewModels;
     using Providers;
     using Providers.Contracts;
-    using System;
     using System.Linq;
     using System.Text;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
-    using static WebServer.Server.Constants;
-
     public class ShoppingController : Controller
     {
         private IUnitOfWork unityOfWork;
-        private CakesData cakesData;
 
         public ShoppingController(ByTheCakeDbContext dbContext)
         {
             this.unityOfWork = new UnitOfWork(dbContext);
-            this.cakesData = new CakesData();
         }
 
         public IHttpResponse AddToCart(IHttpRequest request)

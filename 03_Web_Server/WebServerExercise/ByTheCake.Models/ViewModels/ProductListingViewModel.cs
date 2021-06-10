@@ -1,6 +1,6 @@
-﻿namespace ByTheCake.Application.Models
+﻿namespace ByTheCake.Models.ViewModels
 {
-    public class Cake
+    public class ProductListingViewModel
     {
         public int Id { get; set; }
 

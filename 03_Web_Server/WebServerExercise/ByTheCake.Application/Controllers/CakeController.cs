@@ -1,9 +1,10 @@
 ﻿namespace ByTheCake.Application.Controllers
 {
-    using ByTheCake.Data;
-    using Models;
     using Core;
+    using Data;
     using Infrastructure;
+    using Models;
+    using Models.ViewModels;
     using Providers;
     using Providers.Contracts;
     using System.Collections.Generic;
@@ -15,7 +16,6 @@
     using static Core.Constants.ClientErrorMessage;
     using static Core.Constants.FilePath;
     using static Core.Constants.ViewDataProperty;
-    using ByTheCake.Models;
 
     public class CakeController : Controller
     {
@@ -32,7 +32,7 @@
         public IHttpResponse Add()
             => this.FileViewResponse(CakeAdd);
 
-        public IHttpResponse Add(IHttpRequest request)
+        public IHttpResponse Add(IHttpRequest request, CreateCakeViewModel model)
         {
             const string formNameKey = "name";
             const string formPriceKey = "price";
@@ -43,27 +43,19 @@
                 return new BadRequestResponse();
             }
 
-            string name = request.FormData[formNameKey];
-            string price = request.FormData[formPriceKey];
-            string pictureUrl = request.FormData[formPictureKey];
-
-            if (CoreValidator.CheckIfNullOrEmpty(name, price, pictureUrl))
+            if (CoreValidator.CheckIfNullOrEmpty(model.Name, model.Price.ToString(), model.PictureUrl))
             {
                 return this.ReturnResponseWithErrorMessage(EmptyFields, CakeAdd);
             }
 
-            Product product = new Product
-            {
-                Name = name,
-                Price = decimal.Parse(price),
-                ImageUrl = pictureUrl
-            };
-
+            Product product = this.unitOfWork
+                .ProductRepository
+                .Create(model.Name, model.Price, model.PictureUrl);
             this.unitOfWork.ProductRepository.Add(product);
             this.unitOfWork.Save();
 
-            this.ViewData["name"] = name;
-            this.ViewData["price"] = price;
+            this.ViewData["name"] = model.Name;
+            this.ViewData["price"] = model.Price.ToString(); ;
             this.ViewData[Key.Result] = Value.Block;
 
             return this.FileViewResponse(CakeAdd);
@@ -72,18 +64,18 @@
         public IHttpResponse Details(IHttpRequest request)
         {
             int cakeId = int.Parse(request.UrlParameters["id"]);
-            Product cake = unitOfWork
+            CakeDetailsViewMovdel cakeModel = this.unitOfWork
                 .ProductRepository
-                .Find(cakeId);
+                .Details(cakeId);
 
-            if (cake == null)
+            if (cakeModel == null)
             {
                 return new BadRequestResponse();
             }
 
-            this.ViewData["name"] = cake.Name;
-            this.ViewData["price"] = cake.Price.ToString();
-            this.ViewData["picture"] = cake.ImageUrl;
+            this.ViewData["name"] = cakeModel.Name;
+            this.ViewData["price"] = cakeModel.Price.ToString();
+            this.ViewData["picture"] = cakeModel.PictureUrl;
 
             return this.FileViewResponse(CakeDetails);
         }
@@ -94,26 +86,24 @@
 
             const string formSearchTermKey = "searchTerm";
 
-            if (parameters.ContainsKey(formSearchTermKey))
+            string searchTerm = request.QueryParameters.ContainsKey(formSearchTermKey)
+                ? request.QueryParameters[formSearchTermKey] 
+                : null;
+
+            StringBuilder result = new StringBuilder();
+            IList<ProductListingViewModel> productsModel = this.unitOfWork
+                .ProductRepository
+                .Search(searchTerm)
+                .ToList();
+
+            foreach (ProductListingViewModel product in productsModel)
             {
-                string searchTerm = parameters[formSearchTermKey];
-                StringBuilder result = new StringBuilder();
-                IList<Product> productsFound = this.unitOfWork
-                    .ProductRepository
-                    .Search(searchTerm)
-                    .ToList();
-
-                foreach (Product product in productsFound)
-                {
-                    result.AppendLine(
-                        $@"<div><a href=""/cakeDetails/{product.Id}"">{product.Name}</a> ${product.Price} <a href=""/shopping/add/{product.Id}"">Order</a></div>");
-                }
-
-                this.ViewData["result"] = result.ToString();
-                this.ViewData[Key.Result] = Value.Block;
-
-                return this.FileViewResponse(CakeSearch);
+                result.AppendLine(
+                    $@"<div><a href=""/cakeDetails/{product.Id}"">{product.Name}</a> ${product.Price} <a href=""/shopping/add/{product.Id}"">Order</a></div>");
             }
+
+            this.ViewData["result"] = result.ToString();
+            this.ViewData[Key.Result] = Value.Block;
 
             ShoppingCart cart = request.Session.Get<ShoppingCart>(ShoppingCart.SessionKey);
 

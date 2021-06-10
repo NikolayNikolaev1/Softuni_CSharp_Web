@@ -1,4 +1,4 @@
-﻿namespace ByTheCake.Application.Models
+﻿namespace ByTheCake.Models.ViewModels
 {
     using ByTheCake.Models;
     using System.Collections.Generic;
@@ -7,6 +7,6 @@
     {
         public const string SessionKey = "Current_Shopping_Cart";
 
-        public IList<Product> Orders { get; private set; } = new List<Product>();
+        public IList<Product> Orders { get; set; } = new List<Product>();
     }
 }
