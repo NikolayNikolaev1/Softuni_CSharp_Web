@@ -28,12 +28,12 @@
                 string loginPath = "/login";
                 string registerPath = "/register";
 
-                if (httpContext.Request.Path != loginPath 
-                    && httpContext.Request.Path != registerPath
-                    && !httpContext.Request.Session.Containts(CurrentUserSessionKey))
-                {
-                    return new RedirectResponse(loginPath);
-                }
+                //if (httpContext.Request.Path != loginPath 
+                //    && httpContext.Request.Path != registerPath
+                //    && !httpContext.Request.Session.Containts(CurrentUserSessionKey))
+                //{
+                //    return new RedirectResponse(loginPath);
+                //}
 
                 HttpRequestMethod requestMethod = httpContext.Request.RequestMethod;
                 string requestPath = httpContext.Request.Path;
