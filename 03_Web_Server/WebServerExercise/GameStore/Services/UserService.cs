@@ -3,7 +3,6 @@
     using Contracts;
     using Data;
     using Data.Models;
-    using System.Collections.Generic;
     using System.Linq;
 
     public class UserService : IUserService
@@ -12,7 +11,7 @@
         {
             using (GameStoreDbContext dbContext = new GameStoreDbContext())
             {
-                IList<User> users = dbContext.Users.ToList();
+                var users = dbContext.Users;
 
                 if (!users.Any())
                 {
@@ -45,6 +44,18 @@
                 }
 
                 return false;
+            }
+        }
+
+        public bool IsAdmin(string email)
+        {
+            using (GameStoreDbContext dbContext = new GameStoreDbContext())
+            {
+                return dbContext
+                    .Users
+                    .Where(u => u.Email.Equals(email))
+                    .FirstOrDefault()
+                    .IsAdmin;
             }
         }
 

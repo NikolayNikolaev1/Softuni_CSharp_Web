@@ -1,8 +1,6 @@
 ﻿namespace GameStore.Application.Controllers
 {
     using Infrastructure;
-    using Services;
-    using Services.Contracts;
     using System.Linq;
     using ViewModels.User;
     using WebServer.Server.HTTP.Contracts;
@@ -12,10 +10,12 @@
 
     public class UserController : Controller
     {
-        private IUserService userService;
 
         public UserController()
-            => this.userService = new UserService();
+        {
+            this.ShowGuestNavBar();
+            this.HideErrorMessages();
+        }
 
         public IHttpResponse Login()
             => this.FileViewResponse(FilePaths.UserLogin);
@@ -32,14 +32,21 @@
                 return this.ErrorMessageResponse(ErrorMessages.EmptyFields, FilePaths.UserLogin);
             }
 
-            if (!this.userService.Login(email, password))
+            if (!this.UserService.Login(email, password))
             {
                 // Check for not existing user.
                 return this.ErrorMessageResponse(ErrorMessages.UserNotExist, FilePaths.UserLogin);
             }
 
-            session.Add("^%Current_User_Email%^", email);
+            session.Add(SessionKeys.CurrentUser, email);
+            this.ShowUserNavBar(email);
 
+            return new RedirectResponse(UrlPaths.Home);
+        }
+
+        public IHttpResponse Logout(IHttpSession session)
+        {
+            session.Clear();
             return new RedirectResponse(UrlPaths.Home);
         }
 
@@ -81,7 +88,7 @@
                 return this.ErrorMessageResponse(ErrorMessages.InvalidConfirmPassword, FilePaths.UserRegister);
             }
 
-            bool isUserCreated = this.userService.Create(email, password, model.FullName);
+            bool isUserCreated = this.UserService.Create(email, password, model.FullName);
 
             if (!isUserCreated)
             {
