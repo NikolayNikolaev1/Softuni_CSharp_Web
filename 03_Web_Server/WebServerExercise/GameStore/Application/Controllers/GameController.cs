@@ -10,7 +10,7 @@
         {
             int gameId = int.Parse(request.UrlParameters["id"]);
 
-            GameDetailsViewModel model = this.GameService.Find(gameId);
+            GameDetailsViewModel model = this.GameService.Details(gameId);
 
             return this.FileViewResponse(@"game\details");
         }

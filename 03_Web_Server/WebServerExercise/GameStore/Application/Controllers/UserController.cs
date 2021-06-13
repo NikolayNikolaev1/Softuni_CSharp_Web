@@ -70,7 +70,7 @@
             if (!email.Contains('@') || !email.Contains('.'))
             {
                 // Check for inavlid email.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidEmail, FilePaths.UserRegister);
+                return this.ErrorMessageResponse(ErrorMessages.InvalidUserEmail, FilePaths.UserRegister);
             }
 
             if (!password.Any(l => char.IsUpper(l)) ||
@@ -79,13 +79,13 @@
                 password.Length < 6)
             {
                 // Check for invalid password.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidPassword, FilePaths.UserRegister);
+                return this.ErrorMessageResponse(ErrorMessages.InvalidUserPassword, FilePaths.UserRegister);
             }
 
             if (!password.Equals(confirmPassword))
             {
                 // Check for invalid confirm password.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidConfirmPassword, FilePaths.UserRegister);
+                return this.ErrorMessageResponse(ErrorMessages.InvalidUserConfirmPassword, FilePaths.UserRegister);
             }
 
             bool isUserCreated = this.UserService.Create(email, password, model.FullName);

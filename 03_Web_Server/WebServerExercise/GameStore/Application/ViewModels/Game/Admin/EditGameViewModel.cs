@@ -2,8 +2,10 @@
 {
     using System;
 
-    public class AddGameViewModel
+    public class EditGameViewModel
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
 
         public string Price { get; set; }

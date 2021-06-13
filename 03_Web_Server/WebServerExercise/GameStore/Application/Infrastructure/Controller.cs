@@ -74,7 +74,7 @@
         </a>
     <div class=""dropdown-menu"" aria-labelledby=""navbarDropdown"">
         <a class=""dropdown-item"" href=""/game/add"">Add Game</a>
-        <a class=""dropdown-item"" href=""/agmin/games"">All Games</a>
+        <a class=""dropdown-item"" href=""/admin/games"">All Games</a>
     </div>
 </li>");
 

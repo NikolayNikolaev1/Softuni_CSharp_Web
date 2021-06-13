@@ -1,10 +1,10 @@
 ﻿namespace GameStore.Services
 {
+    using Application.ViewModels.Game;
     using Application.ViewModels.Game.Admin;
     using Contracts;
     using Data;
     using Data.Models;
-    using GameStore.Application.ViewModels.Game;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,13 +32,27 @@
             return gameModels;
         }
 
+        public bool Contains(int id)
+        {
+            using (GameStoreDbContext dbContext = new GameStoreDbContext())
+            {
+                if (dbContext.Games.Any(g => g.Id == id))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public void Create(
             string title,
             decimal price,
             double size,
             string trailer,
             string thumbnailUrl,
-            string description)
+            string description,
+            DateTime releaseDate)
         {
             using (GameStoreDbContext dbContext = new GameStoreDbContext())
             {
@@ -52,13 +66,13 @@
                         Trailer = trailer,
                         ImageThumbnail = thumbnailUrl,
                         Description = description,
-                        ReleaseDate = DateTime.Now
+                        ReleaseDate = releaseDate
                     });
                 dbContext.SaveChanges();
             }
         }
 
-        public GameDetailsViewModel Find(int id)
+        public GameDetailsViewModel Details(int id)
         {
             using (GameStoreDbContext dbContext = new GameStoreDbContext())
             {
@@ -75,6 +89,17 @@
                         Size = g.Size,
                         ReleaseDate = g.ReleaseDate
                     }).FirstOrDefault();
+            }
+        }
+
+        public Game Find(int id)
+        {
+            using (GameStoreDbContext dbContext = new GameStoreDbContext())
+            {
+                return dbContext
+                    .Games
+                    .Where(g => g.Id == id)
+                    .FirstOrDefault();
             }
         }
     }
