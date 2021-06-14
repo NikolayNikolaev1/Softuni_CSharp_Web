@@ -21,8 +21,20 @@
             string description, 
             DateTime releaseDate);
 
+        void Delete(int id);
+
         GameDetailsViewModel Details(int id);
 
+        void Edit(
+            int id,
+            string title,
+            decimal price,
+            double size,
+            string trailer,
+            string thumbnailUrl,
+            string description,
+            DateTime releaseDate);
+            
         Game Find(int id);
 
     }

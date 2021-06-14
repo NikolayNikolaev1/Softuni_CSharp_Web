@@ -68,7 +68,31 @@
             public const string Logout = "/logout";
 
             public const string Register = "/register";
-
         }
+
+        public class Validations
+        {
+            public class Game
+            {
+                public const int DescriptionMinLegth = 20;
+
+                public const int TitleMaxLength = 100;
+
+                public const int TitleMinLength = 3;
+
+                public const int TrailerIdLegth = 11;
+            }
+
+            public class User
+            {
+                public const int EmailMaxLength = 320;
+
+                public const int PasswordMaxLength = 128;
+
+                public const int PasswordMinLength = 6;
+            }
+        }
+
+
     }
 }

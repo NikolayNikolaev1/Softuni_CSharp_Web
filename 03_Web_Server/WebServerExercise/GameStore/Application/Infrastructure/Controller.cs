@@ -3,6 +3,7 @@
     using GameStore.Services;
     using Services.Contracts;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -87,6 +88,26 @@
 </li>");
 
             this.ViewData["navigationBar"] = navbarHtml.ToString();
+        }
+
+        protected string ValidateModel(object model)
+        {
+            // Auto model validations.
+            var context = new ValidationContext(model);
+            var results = new List<ValidationResult>();
+
+            if (Validator.TryValidateObject(model, context, results, true) == false)
+            {
+                foreach (var result in results)
+                {
+                    if (result != ValidationResult.Success)
+                    {
+                        return result.ErrorMessage;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private string ProccessFileHtml(string fileName)

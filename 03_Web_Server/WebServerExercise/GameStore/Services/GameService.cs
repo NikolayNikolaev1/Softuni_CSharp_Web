@@ -72,6 +72,19 @@
             }
         }
 
+        public void Delete(int id)
+        {
+            using (GameStoreDbContext dbContext = new GameStoreDbContext())
+            {
+                Game game = dbContext
+                    .Games
+                    .FirstOrDefault(g => g.Id == id);
+                dbContext
+                    .Games
+                    .Remove(game);
+            }
+        }
+
         public GameDetailsViewModel Details(int id)
         {
             using (GameStoreDbContext dbContext = new GameStoreDbContext())
@@ -89,6 +102,33 @@
                         Size = g.Size,
                         ReleaseDate = g.ReleaseDate
                     }).FirstOrDefault();
+            }
+        }
+
+        public void Edit(
+            int id,
+            string title,
+            decimal price, 
+            double size,
+            string trailer, 
+            string thumbnailUrl, 
+            string description, 
+            DateTime releaseDate)
+        {
+            using (GameStoreDbContext dbContext = new GameStoreDbContext())
+            {
+                Game game = dbContext
+                    .Games
+                    .FirstOrDefault(g => g.Id == id);
+
+                game.Title = title;
+                game.Price = price;
+                game.Size = size;
+                game.Trailer = trailer;
+                game.ImageThumbnail = thumbnailUrl;
+                game.Description = description;
+                game.ReleaseDate = releaseDate;
+                dbContext.SaveChanges();
             }
         }
 

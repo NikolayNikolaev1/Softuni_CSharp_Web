@@ -50,12 +50,23 @@
                     Description = req.FormData["description"],
                     ThumbnailUrl = req.FormData["thumbnail"],
                     Trailer = req.FormData["trailer"],
-                    Price = req.FormData["price"],
-                    Size = req.FormData["size"],
-                    ReleaseDate = req.FormData["release-date"]
+                    Price = decimal.Parse(req.FormData["price"]),
+                    Size = double.Parse(req.FormData["size"]),
+                    ReleaseDate = DateTime.Parse(req.FormData["release-date"])
                 }));
             appRouteConfig.Get(UrlPaths.GameEdit,
                 req => new AdminController().EditGame(req));
+            appRouteConfig.Post(UrlPaths.GameEdit,
+                req => new AdminController().EditGame(req.Session, new EditGameViewModel
+                { 
+                    Id = int.Parse(req.UrlParameters["id"]),
+                    Title = req.FormData["title"],
+                    ThumbnailUrl = req.FormData["thumbnail"],
+                    Trailer = req.FormData["trailer"],
+                    Price = decimal.Parse(req.FormData["price"]),
+                    Size = double.Parse(req.FormData["size"]),
+                    ReleaseDate = DateTime.Parse(req.FormData["release-date"])
+                }));
             appRouteConfig.Get("/games",
                 req => new GameController().Details(req));
         }

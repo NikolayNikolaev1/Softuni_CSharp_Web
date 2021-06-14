@@ -3,16 +3,18 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using static Application.Infrastructure.Constants;
+
     public class User
     {
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(320)]
+        [MaxLength(Validations.User.EmailMaxLength)]
         public string Email { get; set; }
 
         [Required]
-        [MaxLength(128)]
+        [MaxLength(Validations.User.PasswordMaxLength)]
         public string Password { get; set; }
 
         public string FullName { get; set; }

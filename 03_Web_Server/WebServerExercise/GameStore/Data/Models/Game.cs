@@ -3,16 +3,18 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using static Application.Infrastructure.Constants;
+
     public class Game
     {
         public int Id { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(100)]
+        [MinLength(Validations.Game.TitleMinLength)]
+        [MaxLength(Validations.Game.TitleMaxLength)]
         public string Title { get; set; }
 
-        [StringLength(11)]
+        [StringLength(Validations.Game.TrailerIdLegth)]
         public string Trailer { get; set; }
 
         public string ImageThumbnail { get; set; }
@@ -21,7 +23,7 @@
 
         public decimal Price { get; set; }
 
-        [MinLength(20)]
+        [MinLength(Validations.Game.DescriptionMinLegth)]
         public string Description { get; set; }
 
         public DateTime ReleaseDate { get; set; }

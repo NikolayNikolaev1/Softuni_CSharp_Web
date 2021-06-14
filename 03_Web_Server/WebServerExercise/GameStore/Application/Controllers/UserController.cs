@@ -1,7 +1,6 @@
 ﻿namespace GameStore.Application.Controllers
 {
     using Infrastructure;
-    using System.Linq;
     using ViewModels.User;
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
@@ -22,15 +21,14 @@
 
         public IHttpResponse Login(IHttpSession session, LoginUserViewModel model)
         {
+            string error = this.ValidateModel(model);
+            if (error != null)
+            {
+                return this.ErrorMessageResponse(error, FilePaths.UserRegister);
+            }
+
             string email = model.Email;
             string password = model.Password;
-
-            if (string.IsNullOrEmpty(email) ||
-                string.IsNullOrEmpty(password))
-            {
-                // Check for missing fields.
-                return this.ErrorMessageResponse(ErrorMessages.EmptyFields, FilePaths.UserLogin);
-            }
 
             if (!this.UserService.Login(email, password))
             {
@@ -55,40 +53,13 @@
 
         public IHttpResponse Register(RegisterUserViewModel model)
         {
-            string email = model.Email;
-            string password = model.Password;
-            string confirmPassword = model.ConfirmPassword;
-
-            if (string.IsNullOrEmpty(email) ||
-                string.IsNullOrEmpty(password) ||
-                string.IsNullOrEmpty(model.ConfirmPassword))
+            string error = this.ValidateModel(model);
+            if (error != null)
             {
-                // Check for missing fields.
-                return this.ErrorMessageResponse(ErrorMessages.EmptyFields, FilePaths.UserRegister);
+                return this.ErrorMessageResponse(error, FilePaths.UserRegister);
             }
 
-            if (!email.Contains('@') || !email.Contains('.'))
-            {
-                // Check for inavlid email.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidUserEmail, FilePaths.UserRegister);
-            }
-
-            if (!password.Any(l => char.IsUpper(l)) ||
-                !password.Any(l => char.IsLower(l)) ||
-                !password.Any(l => char.IsDigit(l)) ||
-                password.Length < 6)
-            {
-                // Check for invalid password.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidUserPassword, FilePaths.UserRegister);
-            }
-
-            if (!password.Equals(confirmPassword))
-            {
-                // Check for invalid confirm password.
-                return this.ErrorMessageResponse(ErrorMessages.InvalidUserConfirmPassword, FilePaths.UserRegister);
-            }
-
-            bool isUserCreated = this.UserService.Create(email, password, model.FullName);
+            bool isUserCreated = this.UserService.Create(model.Email, model.Password, model.FullName);
 
             if (!isUserCreated)
             {

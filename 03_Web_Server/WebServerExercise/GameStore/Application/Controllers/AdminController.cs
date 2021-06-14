@@ -2,7 +2,6 @@
 {
     using Data.Models;
     using Infrastructure;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -10,7 +9,7 @@
     using WebServer.Server.HTTP.Contracts;
     using WebServer.Server.HTTP.Response;
 
-    using static GameStore.Application.Infrastructure.Constants;
+    using static Infrastructure.Constants;
 
     public class AdminController : Controller
     {
@@ -36,85 +35,20 @@
                 return new BadRequestResponse();
             }
 
-            string title = model.Title;
-            string trailer = model.Trailer;
-            string thumbnailUrl = model.ThumbnailUrl;
-            string description = model.Description;
-
-            IDictionary<string, string> gameProperties = new Dictionary<string, string>
+            string error = this.ValidateModel(model);
+            if (error != null)
             {
-                ["title"] = title,
-                ["trailer"] = trailer,
-                ["price"] = model.Price,
-                ["size"] = model.Size,
-                ["thumbnailUrl"] = thumbnailUrl,
-                ["description"] = description
-            };
-
-            IDictionary<string, string> propertiesValidation = this.GamePropertiesValidation(gameProperties);
-
-            if (propertiesValidation["isValid"].Equals("false"))
-            {
-                return this.ErrorMessageResponse(propertiesValidation["errorMessage"], FilePaths.GameAdd);
+                return this.ErrorMessageResponse(error, FilePaths.GameAdd);
             }
 
-
-            decimal price = decimal.Parse(model.Price);
-            double size = double.Parse(model.Size);
-            DateTime releaseDate = DateTime.Parse(model.ReleaseDate);//todo
-
-            //if (string.IsNullOrEmpty(title) ||
-            //    string.IsNullOrEmpty(price.ToString()) ||
-            //    string.IsNullOrEmpty(size.ToString()))
-            //{
-            //    // Check for missing required fields.
-            //    return this.ErrorMessageResponse(ErrorMessages.EmptyFields, FilePaths.GameAdd);
-            //}
-
-            //if (title.Length < 3 || title.Length > 100)
-            //{
-            //    // Check for invalid title length.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGameTitle, FilePaths.GameAdd);
-            //}
-
-            //if (price < 0)
-            //{
-            //    // Check for negative numbers.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGamePrice, FilePaths.GameAdd);
-            //}
-
-            //if (size < 0)
-            //{
-            //    // Check for negative numbers.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGameSize, FilePaths.GameAdd);
-            //}
-
-            //if (!string.IsNullOrEmpty(trailer) &&
-            //    trailer.Contains('/') ||
-            //    trailer.Contains('?') ||
-            //    trailer.Contains('=') ||
-            //    trailer.Length != 11)
-            //{
-            //    // Check for invalid trailer id.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGameTrailer, FilePaths.GameAdd);
-            //}
-
-            //if (!string.IsNullOrEmpty(thumbnailUrl) &&
-            //    !thumbnailUrl.StartsWith("http://") &&
-            //    !thumbnailUrl.StartsWith("https://"))
-            //{
-            //    // Check for invalid thumbnail url.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGameThumbnailUrl, FilePaths.GameAdd);
-            //}
-
-            //if (!string.IsNullOrEmpty(description) &&
-            //    description.Length < 20)
-            //{
-            //    // Check for invalid description length.
-            //    return this.ErrorMessageResponse(ErrorMessages.InvalidGameDescription, FilePaths.GameAdd);
-            //}
-
-            this.GameService.Create(title, price, size, trailer, thumbnailUrl, description, releaseDate);
+            this.GameService.Create(
+                model.Title,
+                model.Price,
+                model.Size,
+                model.Trailer,
+                model.ThumbnailUrl,
+                model.Description,
+                model.ReleaseDate);
 
             return new RedirectResponse(UrlPaths.GameAdminList);
         }
@@ -184,99 +118,47 @@
                 return new BadRequestResponse();
             }
 
+            string error = this.ValidateModel(model);
+            if (error != null)
+            {
+                return this.ErrorMessageResponse(error, FilePaths.UserRegister);
+            }
+
+            if (!this.GameService.Contains(model.Id))
+            {
+                return new BadRequestResponse();
+            }
+
+            this.GameService.Edit(
+                model.Id,
+                model.Title,
+                model.Price,
+                model.Size,
+                model.Trailer,
+                model.ThumbnailUrl,
+                model.Description,
+                model.ReleaseDate);
+
             return new RedirectResponse(UrlPaths.GameAdminList);
         }
 
-        private IDictionary<string, string> GamePropertiesValidation(IDictionary<string, string> properties)
+        public IHttpResponse DeleteGame(IHttpRequest request)
         {
-            string title = properties["title"];
-            string trailer = properties["trailer"];
-            decimal price = decimal.Parse(properties["price"]);
-            double size = double.Parse(properties["size"]);
-            string thumbnailUrl = properties["thumbnailUrl"];
-            string description = properties["description"];
-
-            if (string.IsNullOrEmpty(title) ||
-                string.IsNullOrEmpty(price.ToString()) ||
-                string.IsNullOrEmpty(size.ToString()))
+            if (!AdminAccess(request.Session))
             {
-                // Check for missing required fields.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.EmptyFields
-                };
+                return new BadRequestResponse();
             }
 
-            if (title.Length < 3 || title.Length > 100)
-            {
-                // Check for invalid title length.
+            int gameId = int.Parse(request.UrlParameters["id"]);
 
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGameTitle
-                };
+            if (!this.GameService.Contains(gameId))
+            {
+                return new BadRequestResponse();
             }
 
-            if (price < 0)
-            {
-                // Check for negative numbers.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGamePrice
-                };
-            }
+            this.GameService.Delete(gameId);
 
-            if (size < 0)
-            {
-                // Check for negative numbers.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGameSize
-                };
-            }
-
-            if (!string.IsNullOrEmpty(trailer) &&
-                trailer.Contains('/') ||
-                trailer.Contains('?') ||
-                trailer.Contains('=') ||
-                trailer.Length != 11)
-            {
-                // Check for invalid trailer id.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGameTrailer
-                };
-            }
-
-            if (!string.IsNullOrEmpty(thumbnailUrl) &&
-                !thumbnailUrl.StartsWith("http://") &&
-                !thumbnailUrl.StartsWith("https://"))
-            {
-                // Check for invalid thumbnail url.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGameThumbnailUrl
-                };
-            }
-
-            if (!string.IsNullOrEmpty(description) &&
-                description.Length < 20)
-            {
-                // Check for invalid description length.
-                return new Dictionary<string, string>
-                {
-                    ["isValid"] = "false",
-                    ["errorMessage"] = ErrorMessages.InvalidGameDescription
-                };
-            }
-
-            return new Dictionary<string, string>() { ["isValid"] = "true" };
+            return new RedirectResponse(UrlPaths.GameAdminList);
         }
 
         private bool AdminAccess(IHttpSession session)
