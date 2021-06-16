@@ -79,7 +79,7 @@
     </div>
 </li>");
 
-
+                this.ViewData["showAdminOptions"] = "block";
             }
 
             navbarHtml.Append(@"
@@ -88,6 +88,7 @@
 </li>");
 
             this.ViewData["navigationBar"] = navbarHtml.ToString();
+            this.ViewData["showAdminOptions"] = "block";
         }
 
         protected string ValidateModel(object model)

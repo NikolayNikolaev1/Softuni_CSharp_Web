@@ -1,0 +1,48 @@
+﻿<form action="/game/delete/{{{gameId}}}" method="post">
+    <div class="container">
+        <div style="text-align:center">
+            <h1>Delete Game - {{{gameTitle}}}</h1>
+        </div>
+        <div class="alert alert-danger" role="alert" style="display: {{{showError}}}">
+            {{{errorMessage}}}
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input type="text" required class="form-control" name="title" value="{{{gameTitle}}}" placeholder="Enter Game Title" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Description</label>
+            <input type="text" class="form-control" name="description" value="{{{gameDescription}}}" placeholder="Enter Game Description" disabled>
+        </div>
+
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Thumbnail</label>
+            <input type="text" class="form-control" name="thumbnail" value="{{{gameThumbnailUrl}}}" placeholder="Enter URL to Image" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Price</label>
+            <input type="number" required class="form-control" name="price" value="{{{gamePrice}}}" placeholder="Enter Price" step=".01" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Size</label>
+            <input type="number" required class="form-control" name="size" value="{{{gameSize}}}" placeholder="Enter Size" step=".1" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">YouTube Video URL</label>
+            <input type="text" class="form-control" name="trailer" value="{{{gameTrailer}}}" placeholder="http://www.youtube.com/watch?v=" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">Release Date</label>
+            <input type="date" required class="form-control" name="release-date" value="{{{gameReleaseDate}}}" disabled>
+        </div>
+        <button type="submit" class="btn btn-danger btn-block">Delete Game</button>
+    </div>
+</form>
+

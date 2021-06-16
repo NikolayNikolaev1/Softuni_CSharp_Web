@@ -100,6 +100,7 @@
 
             Game currentGame = this.GameService.Find(gameId);
 
+            this.ViewData["gameId"] = currentGame.Id.ToString();
             this.ViewData["gameTitle"] = currentGame.Title;
             this.ViewData["gameDescription"] = currentGame.Description;
             this.ViewData["gameThumbnail"] = currentGame.ImageThumbnail;
@@ -143,6 +144,36 @@
         }
 
         public IHttpResponse DeleteGame(IHttpRequest request)
+        {
+
+            if (!AdminAccess(request.Session))
+            {
+                return new BadRequestResponse();
+            }
+
+            int gameId = int.Parse(request.UrlParameters["id"]);
+
+
+            if (!this.GameService.Contains(gameId))
+            {
+                return new BadRequestResponse();
+            }
+
+            Game game = this.GameService.Find(gameId);
+
+            this.ViewData["gameId"] = gameId.ToString();
+            this.ViewData["gameTitle"] = game.Title;
+            this.ViewData["gameDescription"] = game.Description;
+            this.ViewData["gamePrice"] = game.Price.ToString("F2");
+            this.ViewData["gameSize"] = game.Size.ToString("F1");
+            this.ViewData["gameTrailer"] = game.Trailer;
+            this.ViewData["gameThumbnailUrl"] = game.ImageThumbnail;
+            this.ViewData["gameReleaseDate"] = game.ReleaseDate.ToString();
+
+            return this.FileViewResponse(FilePaths.GameDelete);
+        }
+
+        public IHttpResponse DeleteGamePost(IHttpRequest request)
         {
             if (!AdminAccess(request.Session))
             {

@@ -15,11 +15,9 @@
         public string Title { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.EmptyFields)]
-        [MinLength(0, ErrorMessage = ErrorMessages.InvalidGamePrice)]
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = ErrorMessages.EmptyFields)]
-        [MinLength(0, ErrorMessage = ErrorMessages.InvalidGameSize)]
         public double Size { get; set; }
 
         [StringLength(11, ErrorMessage = ErrorMessages.InvalidGameTrailer)]

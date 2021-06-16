@@ -61,13 +61,18 @@
                 { 
                     Id = int.Parse(req.UrlParameters["id"]),
                     Title = req.FormData["title"],
+                    Description = req.FormData["description"],
                     ThumbnailUrl = req.FormData["thumbnail"],
                     Trailer = req.FormData["trailer"],
                     Price = decimal.Parse(req.FormData["price"]),
                     Size = double.Parse(req.FormData["size"]),
                     ReleaseDate = DateTime.Parse(req.FormData["release-date"])
                 }));
-            appRouteConfig.Get("/games",
+            appRouteConfig.Get(UrlPaths.GameDelete,
+                req => new AdminController().DeleteGame(req));
+            appRouteConfig.Post(UrlPaths.GameDelete,
+                req => new AdminController().DeleteGamePost(req));
+            appRouteConfig.Get(UrlPaths.GameDetails,
                 req => new GameController().Details(req));
         }
 

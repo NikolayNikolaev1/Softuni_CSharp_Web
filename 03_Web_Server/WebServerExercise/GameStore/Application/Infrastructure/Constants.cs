@@ -57,6 +57,8 @@
 
             public const string GameDelete = "/game/delete/{(?<id>[0-9]+)}";
 
+            public const string GameDetails = "/game/details/{(?<id>[0-9]+)}";
+
             public const string GameEdit = "/game/edit/{(?<id>[0-9]+)}";
 
             public const string GameAdminList = "/admin/games";

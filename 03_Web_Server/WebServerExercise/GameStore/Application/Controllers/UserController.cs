@@ -24,7 +24,7 @@
             string error = this.ValidateModel(model);
             if (error != null)
             {
-                return this.ErrorMessageResponse(error, FilePaths.UserRegister);
+                return this.ErrorMessageResponse(error, FilePaths.UserLogin);
             }
 
             string email = model.Email;

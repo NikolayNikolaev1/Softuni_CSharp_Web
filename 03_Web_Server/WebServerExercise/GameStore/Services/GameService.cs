@@ -79,9 +79,12 @@
                 Game game = dbContext
                     .Games
                     .FirstOrDefault(g => g.Id == id);
+
                 dbContext
                     .Games
                     .Remove(game);
+
+                dbContext.SaveChanges();
             }
         }
 

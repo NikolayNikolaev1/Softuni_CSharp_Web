@@ -1,0 +1,19 @@
+﻿
+<div class="container">
+    <h1>{{{gameTitle}}}</h1>
+
+    <iframe src="https://www.youtube.com/embed/{{{gameTrailer}}}" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+
+    <p>{{{gameDescription}}}</p>
+
+    <h4>Price - {{{gamePrice}}} &euro;</h4>
+    <h4>Size - {{{gameSize}}} GB</h4>
+    <h4>Release Date - {{{gameReleaseDate}}}</h4>
+
+    <a class="btn" href="/">Back</a>
+    <a class="btn btn-primary" href="/buy">Buy</a>
+    <div style="display:{{{showAdminOptions}}}">
+        <a class="btn btn-warning" href="/game/edit/{{{gameId}}}">Edit</a>
+        <a class="btn btn-danger" href="/game/delete/{{{gameId}}}">Delete</a>
+    </div>
+</div>
