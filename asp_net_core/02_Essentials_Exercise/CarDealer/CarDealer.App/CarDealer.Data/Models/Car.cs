@@ -1,6 +1,7 @@
 ﻿namespace CarDealer.Data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class Car
@@ -18,8 +19,12 @@
         [MinLength(Constants.StringMinlength)]
         public string Model { get; set; }
 
-        [Range(Constants.RangeMinValue, Constants.RangeMaxValue)]
+        [Range(Constants.RangeMinValue, double.MaxValue)]
         // In kilometers.
-        public double TravelledDistance { get; set; } 
+        public double TravelledDistance { get; set; }
+
+        public ICollection<CarPart> Parts { get; set; } = new List<CarPart>();
+
+        public Sale Sale { get; set; }
     }
 }

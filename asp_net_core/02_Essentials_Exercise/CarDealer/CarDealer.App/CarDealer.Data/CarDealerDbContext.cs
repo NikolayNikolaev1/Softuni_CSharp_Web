@@ -2,9 +2,13 @@
 {
     using Microsoft.EntityFrameworkCore;
     using Models;
+    using System.Reflection;
 
     public class CarDealerDbContext : DbContext
     {
+        public CarDealerDbContext(DbContextOptions<CarDealerDbContext> options)
+            : base(options) { }
+
         public DbSet<Car> Cars { get; set; }
 
         public DbSet<Part> Parts { get; set; }
@@ -15,14 +19,7 @@
 
         public DbSet<Sale> Sales { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
+        protected override void OnModelCreating(ModelBuilder builder)
+            => builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

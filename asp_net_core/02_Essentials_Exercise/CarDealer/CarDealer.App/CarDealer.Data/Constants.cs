@@ -2,9 +2,8 @@
 {
     public class Constants
     {
+        public const double RangeMinValue = 0.0;
         public const int StringMaxLength = 50;
         public const int StringMinlength = 3;
-        public const int RangeMaxValue = 1000000;
-        public const int RangeMinValue = 0;
     }
 }
