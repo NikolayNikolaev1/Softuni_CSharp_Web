@@ -1,0 +1,21 @@
+﻿@model SupplierListingViewModel
+
+<h1>All Suppliers</h1>
+<h2>Suplier type: @Model.SupplierType</h2>
+
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Parts Count</th>
+    </tr>
+    @foreach (var supplier in Model.Suppliers)
+    {
+        <tr>
+            <td>@supplier.Id</td>
+            <td>@supplier.Name</td>
+            <td>@supplier.PartsCount</td>
+        </tr>
+    }
+</table>
+

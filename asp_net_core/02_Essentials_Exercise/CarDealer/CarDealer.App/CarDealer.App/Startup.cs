@@ -29,6 +29,9 @@ namespace CarDealer.App
                 options.UseSqlServer(Configuration.GetConnectionString("CarDealerDatabase")));
 
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<ICarService, CarService>();
+            services.AddTransient<ISupplierService, SupplierService>();
+            services.AddTransient<ISaleService, SaleService>();
 
             services.AddMvc();
         }
@@ -57,11 +60,6 @@ namespace CarDealer.App
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "customer",
-                    pattern: "customer/all/{order}",
-                    defaults: new { controller = "Customer", action = "All" });
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

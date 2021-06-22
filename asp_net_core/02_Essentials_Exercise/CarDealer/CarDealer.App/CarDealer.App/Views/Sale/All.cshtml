@@ -1,0 +1,19 @@
+﻿@model ICollection<SaleModel>
+
+<h1>Sales</h1>
+
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var sale in Model)
+    {
+        <tr>
+            <td>@sale.Id</td>
+            <td>
+                <a href="/Sales/@sale.Id">Details</a>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,10 +1,13 @@
 ﻿namespace CarDealer.Services.Contracts
 {
-    using Models;
+    using Models.Enums;
+    using Models.Customer;
     using System.Collections.Generic;
 
     public interface ICustomerService
     {
-        ICollection<CustomerListingModel> OrderedCustomers(OrderType order);
+        CustomerSalesModel FindSales(int id);
+
+        ICollection<CustomerModel> OrderedCustomers(OrderType order);
     }
 }

@@ -1,6 +1,7 @@
-﻿@Model ICollection<CustomerListingModel>
+﻿@model CustomerListingViewModel
 
     <h1>All Customers</h1>
+    <h2>Ordered by Birth Date @Model.OrderType</h2>
 
     <table class="table">
         <tr>
@@ -8,12 +9,12 @@
             <th>Birth Date</th>
             <th>Young Driver</th>
         </tr>
-        @foreach (var customer in Model)
+        @foreach (var customer in Model.Customers)
         {
             <tr>
                 <td>@customer.Name</td>
-                <td>@customer.BirthDate</td>
-                <td>@customer.IsYoungDriver</td>
+                <td>@customer.BirthDate.ToString("dd-MM-yyyy")</td>
+                <td>@(customer.IsYoungDriver ? "Yes" : "No")</td>
             </tr>
         }
     </table>

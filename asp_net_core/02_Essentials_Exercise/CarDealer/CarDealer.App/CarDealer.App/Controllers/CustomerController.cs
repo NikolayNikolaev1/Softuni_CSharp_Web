@@ -1,8 +1,11 @@
 ﻿namespace CarDealer.App.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Models.Customer;
     using Services.Contracts;
-    using System.Linq;
+    using Services.Models.Enums;
+    using Services.Models.Customer;
+    using System.Collections.Generic;
 
     public class CustomerController : Controller
     {
@@ -13,6 +16,7 @@
             this.customers = customers;
         }
 
+        [Route("/customers/all/{order}")]
         public IActionResult All(string order)
         {
             if (string.IsNullOrEmpty(order))
@@ -20,20 +24,21 @@
                 return NotFound();
             }
 
-            if (order.Equals("ascending"))
-            {
-                return View(customers
-                    .OrderedCustomers()
-                    .OrderBy(c => c.BirthDate));
-            }
-            else if (order.Equals("descending"))
-            {
-                return View(customers
-                    .OrderedCustomers()
-                    .OrderByDescending(c => c.BirthDate));
-            }
+            OrderType orderType = order.ToLower() == "descending"
+                ? OrderType.Descending
+                : OrderType.Ascending;
 
-            return NotFound();
+            ICollection<CustomerModel> customers = this.customers.OrderedCustomers(orderType);
+
+            return View(new CustomerListingViewModel
+            {
+                Customers = customers,
+                OrderType = orderType
+            });
         }
+
+        [Route("/customers/{id}")]
+        public IActionResult GetSales(int id)
+            => View(this.customers.FindSales(id));
     }
 }

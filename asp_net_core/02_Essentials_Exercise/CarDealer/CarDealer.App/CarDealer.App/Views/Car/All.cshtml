@@ -1,0 +1,21 @@
+﻿@model CarListingViewModel
+
+<h1>All Cars</h1>
+<h2>With Make: @Model.Make</h2>
+
+<table class="table">
+    <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Traveled Distance</th>
+    </tr>
+    @foreach (var cars in Model.Cars)
+    {
+        <tr>
+            <td>@cars.Make</td>
+            <td>@cars.Model</td>
+            <td>@(cars.TraveledDistance.ToString("F0"))</td>
+        </tr>
+    }
+</table>
+

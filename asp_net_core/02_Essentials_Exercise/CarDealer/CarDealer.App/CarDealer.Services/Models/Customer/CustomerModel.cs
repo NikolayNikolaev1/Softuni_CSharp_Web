@@ -1,8 +1,8 @@
-﻿namespace CarDealer.Services.Models
+﻿namespace CarDealer.Services.Models.Customer
 {
     using System;
 
-    public class CustomerListingModel
+    public class CustomerModel
     {
         public string Name { get; set; }
 
