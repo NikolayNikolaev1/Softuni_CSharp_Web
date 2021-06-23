@@ -16,11 +16,11 @@
         public IActionResult All()
             => View(this.sales.All());
 
-        [Route("/sales/{id}")]
+        [Route("/sales/{id}", Order = 2)]
         public IActionResult Details(int id)
             => View(this.sales.Find(id));
 
-        [Route("/sales/discounted")]
+        [Route("/sales/discounted", Order = 1)]
         public IActionResult Discounted()
             => View(this.sales.AllDiscounted());
 

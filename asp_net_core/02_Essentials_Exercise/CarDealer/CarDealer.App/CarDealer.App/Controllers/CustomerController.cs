@@ -16,6 +16,22 @@
             this.customers = customers;
         }
 
+        public IActionResult Add()
+            => View();
+
+        [HttpPost]
+        public IActionResult Add(CustomerCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            this.customers.Create(model.Name, model.BirthDate);
+
+            return Redirect("/");
+        }
+
         [Route("/customers/all/{order}")]
         public IActionResult All(string order)
         {
@@ -35,6 +51,19 @@
                 Customers = customers,
                 OrderType = orderType
             });
+        }
+
+        public IActionResult Edit(int id)
+        {
+            CustomerModel currentCustomer = this.customers
+                .Find(id);
+
+            if (currentCustomer == null)
+            {
+                return NotFound();
+            }
+
+            return View(currentCustomer);
         }
 
         [Route("/customers/{id}")]

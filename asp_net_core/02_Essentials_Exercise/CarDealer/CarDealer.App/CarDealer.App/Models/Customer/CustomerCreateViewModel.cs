@@ -1,15 +1,14 @@
 ﻿namespace CarDealer.Services.Models.Customer
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
 
-    public class CustomerModel
+    public class CustomerCreateViewModel
     {
-        public int Id { get; set; }
-
+        [MaxLength(50)]
+        [Required(ErrorMessage = "Missing Name")]
         public string Name { get; set; }
 
         public DateTime BirthDate { get; set; }
-
-        public bool IsYoungDriver { get; set; }
     }
 }

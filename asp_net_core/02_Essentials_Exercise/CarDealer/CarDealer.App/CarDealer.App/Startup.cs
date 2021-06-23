@@ -28,10 +28,7 @@ namespace CarDealer.App
             services.AddDbContext<CarDealerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CarDealerDatabase")));
 
-            services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<ICarService, CarService>();
-            services.AddTransient<ISupplierService, SupplierService>();
-            services.AddTransient<ISaleService, SaleService>();
+            services.AddDomainServices();
 
             services.AddMvc();
         }

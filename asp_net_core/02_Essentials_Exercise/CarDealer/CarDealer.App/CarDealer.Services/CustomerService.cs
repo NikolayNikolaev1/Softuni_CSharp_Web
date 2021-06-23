@@ -2,12 +2,13 @@
 {
     using Contracts;
     using Data;
-    using Models.Enums;
+    using Data.Models;
+    using Models.Car;
     using Models.Customer;
+    using Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using CarDealer.Services.Models.Car;
 
     public class CustomerService : ICustomerService
     {
@@ -16,6 +17,40 @@
         public CustomerService(CarDealerDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        public void Create(string name, DateTime birthDate)
+        {
+            this.dbContext
+            .Add(new Customer
+            {
+                Name = name,
+                BirthDate = birthDate,
+                IsYoungDriver = true,
+            });
+
+            dbContext.SaveChanges();
+        }
+
+        public CustomerModel Find(int id)
+        {
+            var customers = this.dbContext
+                .Customers
+                .AsQueryable();
+
+            if (!customers.Any(c => c.Id == id))
+            {
+                return null;
+            }
+
+            return customers
+                .Where(c => c.Id == id)
+                .Select(c => new CustomerModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    BirthDate = c.BirthDate
+                }).FirstOrDefault();
         }
 
         public CustomerSalesModel FindSales(int id)
@@ -58,6 +93,7 @@
             return customers
                 .Select(c => new CustomerModel
                 {
+                    Id = c.Id,
                     Name = c.Name,
                     BirthDate = c.BirthDate,
                     IsYoungDriver = c.IsYoungDriver

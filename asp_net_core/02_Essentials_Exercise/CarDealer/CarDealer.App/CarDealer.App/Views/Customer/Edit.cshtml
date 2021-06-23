@@ -1,0 +1,23 @@
+﻿@model CustomerModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<form action="/customer/edit/@Model.Id" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" class="form-control" value="@Model.Name"/>
+        <span asp-validation-for="Name" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="BirthDate">Birth Date</label>
+        <input asp-for="BirthDate" type="date" class="form-control" value="@Model.BirthDate"/>
+        <span asp-validation-for="BirthDate" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <input class="btn btn-success" type="submit" value="Edit Customer" />
+    </div>
+</form>

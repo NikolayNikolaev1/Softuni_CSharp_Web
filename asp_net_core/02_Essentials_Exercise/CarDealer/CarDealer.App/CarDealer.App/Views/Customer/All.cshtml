@@ -1,21 +1,23 @@
 ﻿@model CustomerListingViewModel
 
-    <h1>All Customers</h1>
-    <h2>Ordered by Birth Date @Model.OrderType</h2>
+<h1>All Customers</h1>
+<h2>Ordered by Birth Date @Model.OrderType</h2>
 
-    <table class="table">
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Birth Date</th>
+        <th>Young Driver</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var customer in Model.Customers)
+    {
         <tr>
-            <th>Name</th>
-            <th>Birth Date</th>
-            <th>Young Driver</th>
+            <td>@customer.Name</td>
+            <td>@customer.BirthDate.ToString("dd-MM-yyyy")</td>
+            <td>@(customer.IsYoungDriver ? "Yes" : "No")</td>
+            <td><a class="btn" href="/customer/edit/@customer.Id">Edit</a></td>
         </tr>
-        @foreach (var customer in Model.Customers)
-        {
-            <tr>
-                <td>@customer.Name</td>
-                <td>@customer.BirthDate.ToString("dd-MM-yyyy")</td>
-                <td>@(customer.IsYoungDriver ? "Yes" : "No")</td>
-            </tr>
-        }
-    </table>
+    }
+</table>
 
