@@ -32,6 +32,24 @@
             dbContext.SaveChanges();
         }
 
+        public bool Edit(int id, string name, DateTime birthDate)
+        {
+            Customer customer = this.dbContext
+                .Customers
+                .Find(id);
+
+            if (customer == null)
+            {
+                return false;
+            }
+
+            customer.Name = name;
+            customer.BirthDate = birthDate;
+            this.dbContext.SaveChanges();
+
+            return true;
+        }
+
         public CustomerModel Find(int id)
         {
             var customers = this.dbContext

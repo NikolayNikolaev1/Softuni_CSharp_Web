@@ -43,5 +43,15 @@
                     PartsCount = s.Parts.Count
                 }).ToList();
         }
+
+        public ICollection<SupplierModel> All()
+            => this.dbContext
+            .Suppliers
+            .Select(s => new SupplierModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                PartsCount = s.Parts.Count
+            }).ToList();
     }
 }

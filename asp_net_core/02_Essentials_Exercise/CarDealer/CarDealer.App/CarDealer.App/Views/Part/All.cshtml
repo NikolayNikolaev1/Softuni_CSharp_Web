@@ -1,0 +1,28 @@
+﻿@model ICollection<PartModel>
+
+<h1>All Parts</h1>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Supplier</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var part in Model)
+    {
+        <tr>
+            <td>@part.Name</td>
+            <td>@part.Price</td>
+            <td>@part.Quantity</td>
+            <td>@part.SupplierName</td>
+
+            <td>
+                <a class="btn btn-warning" href="/part/edit/@part.Id">Edit</a>
+                <a class="btn btn-danger" href="/part/delete/@part.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+

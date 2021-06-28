@@ -1,0 +1,21 @@
+﻿@model PartModel
+
+<h1>Edit Part @Model.Name</h1>
+<h2>Price: @Model.Price</h2>
+<h2>Supplier: @Model.SupplierName</h2>
+
+<form action="/part/edit/@Model.Id" method="post">
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" value="@Model.Name" class="form-control" />
+        <span asp-validation-for="Name" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Quantity">Quantity</label>
+        <input asp-for="Quantity" value="@Model.Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <input class="btn btn-success" type="submit" value="Eidt Part" />
+    </div>
+</form>

@@ -1,5 +1,6 @@
 ﻿namespace CarDealer.App.Controllers
 {
+    using CarDealer.Services.Models.Car;
     using Microsoft.AspNetCore.Mvc;
     using Models.Car;
     using Services.Contracts;
@@ -11,6 +12,22 @@
         public CarController(ICarService cars)
         {
             this.cars = cars;
+        }
+
+        public IActionResult Add()
+            => View();
+
+        [HttpPost]
+        public IActionResult Add(CarModel carModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(carModel);
+            }
+
+            this.cars.Add(carModel.Make, carModel.Model, carModel.TraveledDistance);
+
+            return Redirect("/");
         }
 
         [Route("/cars/{make}")]

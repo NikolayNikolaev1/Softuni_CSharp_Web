@@ -1,0 +1,25 @@
+﻿@model CarModel
+
+<h1>Add Car</h1>
+
+
+<form action="/car/add" method="post">
+    <div class="form-group">
+        <label asp-for="Make"></label>
+        <input asp-for="Make" class="form-control" />
+        <span asp-validation-for="Make" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Model">Model</label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="TraveledDistance">Traveled Distance</label>
+        <input asp-for="TraveledDistance" class="form-control" />
+        <span asp-validation-for="TraveledDistance" class="form-text text-danger"></span>
+    </div>
+    <div>
+        <input class="btn btn-success" type="submit" value="Add Car" />
+    </div>
+</form>

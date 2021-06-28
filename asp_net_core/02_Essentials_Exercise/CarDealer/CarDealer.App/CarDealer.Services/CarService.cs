@@ -1,5 +1,6 @@
 ﻿namespace CarDealer.Services
 {
+    using CarDealer.Data.Models;
     using Data;
     using Models.Part;
     using Services.Contracts;
@@ -14,6 +15,20 @@
         public CarService(CarDealerDbContext dbContext)
         {
             this.dbContext = dbContext;
+        }
+
+        public void Add(string make, string model, double travelledDistance)
+        {
+            this.dbContext
+                .Cars
+                .Add(new Car
+                {
+                    Make = make,
+                    Model = model,
+                    TravelledDistance = travelledDistance
+                });
+
+            this.dbContext.SaveChanges();
         }
 
         public CarPartsModel FindWithParts(int id)

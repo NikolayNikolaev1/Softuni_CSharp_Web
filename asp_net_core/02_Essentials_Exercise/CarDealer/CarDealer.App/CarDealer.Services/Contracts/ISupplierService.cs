@@ -6,6 +6,8 @@
 
     public interface ISupplierService
     {
+        ICollection<SupplierModel> All();
+
         ICollection<SupplierModel> All(SupplierType type);
     }
 }

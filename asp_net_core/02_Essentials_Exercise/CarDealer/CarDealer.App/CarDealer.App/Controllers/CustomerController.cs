@@ -66,6 +66,24 @@
             return View(currentCustomer);
         }
 
+        [HttpPost]
+        public IActionResult Edit(int id, CustomerEditModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool result = this.customers.Edit(id, model.Name, model.BirthDate);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Redirect("/");
+        }
+
         [Route("/customers/{id}")]
         public IActionResult GetSales(int id)
             => View(this.customers.FindSales(id));

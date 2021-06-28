@@ -8,6 +8,6 @@
     {
         public ICollection<SupplierModel> Suppliers { get; set; }
 
-        public SupplierType SupplierType { get; set; }
+        public SupplierType? SupplierType { get; set; }
     }
 }

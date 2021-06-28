@@ -9,6 +9,8 @@
     {
         void Create(string name, DateTime birthDate);
 
+        bool Edit(int id, string name, DateTime birthDate);
+
         CustomerModel Find(int id);
 
         CustomerSalesModel FindSales(int id);

@@ -14,7 +14,7 @@
     </div>
     <div>
         <label asp-for="BirthDate">Birth Date</label>
-        <input asp-for="BirthDate" type="date" class="form-control" value="@Model.BirthDate"/>
+        <input asp-for="BirthDate" type="date" class="form-control" value="@Model.BirthDate.ToString("yyyy-MM-dd")"/>
         <span asp-validation-for="BirthDate" class="form-text text-danger"></span>
     </div>
     <div>
