@@ -1,21 +1,10 @@
 ﻿namespace CameraBazaar.Data.Models
 {
-    using Validations.User;
+    using Microsoft.AspNetCore.Identity;
+    using System.Collections.Generic;
 
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-
-        [Username(nameof(Username))]
-        public string Username { get; set; }
-
-        [Email]
-        public string Email { get; set; }
-
-        [Password(nameof(Password))]
-        public string Password { get; set; }
-
-        [Phone]
-        public string Phone { get; set; }
+        public ICollection<Camera> Cameras { get; set; } = new List<Camera>();
     }
 }

@@ -21,13 +21,18 @@
         public override bool IsValid(object value)
         {
             string phone = value as string;
+
+            if (string.IsNullOrEmpty(phone))
+            {
+                return false;
+            }
+
             string phoneDigits = phone.Substring(1);
 
-            return !string.IsNullOrEmpty(phone)
-                && phone.StartsWith("+")
+            return phone.StartsWith("+")
                 && phoneDigits.All(s => char.IsDigit(s))
-                && phoneDigits.Length > DigitsMinCount
-                && phoneDigits.Length < DigitsMaxCount;
+                && phoneDigits.Length >= DigitsMinCount
+                && phoneDigits.Length <= DigitsMaxCount;
         }
     }
 }

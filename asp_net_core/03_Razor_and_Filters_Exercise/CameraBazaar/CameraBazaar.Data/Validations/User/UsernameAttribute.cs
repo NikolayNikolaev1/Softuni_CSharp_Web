@@ -24,7 +24,7 @@
                 return false;
             }
 
-            if (username.Length < LettersMinLength && 
+            if (username.Length < LettersMinLength ||
                 username.Length > LettersMaxLength)
             {
                 this.ErrorMessage = string.Format(
@@ -49,7 +49,7 @@
         {
             public const string InvalidLegth = "{0} must be between {1} and {2} symbols long.";
             public const string InvalidSymbol = "{0} must contain only letters. Casing does not matter.";
-            public const string InvalidUsername = "{0} is required";
+            public const string InvalidUsername = "{0} is required.";
         }
     }
 }

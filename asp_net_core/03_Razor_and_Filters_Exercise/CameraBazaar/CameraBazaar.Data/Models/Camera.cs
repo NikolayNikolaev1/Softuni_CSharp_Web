@@ -26,8 +26,7 @@
         // Fraction of a second
         public int MaxShutterSpeed { get; set; }
 
-        [MinIso]
-        public int MinIso { get; set; }
+        public MinIsoType MinIso { get; set; }
 
         [Display(Name = "Max ISO")]
         [MaxIso(nameof(MaxIso))]
@@ -36,14 +35,21 @@
         public bool IsFullFrame { get; set; }
 
         [MaxLength(15)]
+        [Required]
         public string VideoResolution { get; set; }
 
         public LightMeteringType LightMetering { get; set; }
 
         [MaxLength(6000)]
+        [Required]
         public string Description { get; set; }
 
         [Url]
+        [Required]
         public string ImageUrl { get; set; }
+
+        public string UserId { get; set; }
+
+        public User User { get; set; }
     }
 }
