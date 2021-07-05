@@ -34,6 +34,9 @@ namespace CameraBazaar.App
                 options.Password.RequiredLength = 3;
             })
                 .AddEntityFrameworkStores<CameraBazaarDbContext>();
+
+            services.AddDomainServices();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

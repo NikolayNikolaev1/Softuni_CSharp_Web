@@ -16,7 +16,7 @@
 
         public override bool IsValid(object value)
         {
-            int iso = int.Parse(value as string);
+            int iso = (int)value;
 
             if (iso < MaxIsoMinValue || iso > MaxIsoMaxValue)
             {

@@ -1,0 +1,20 @@
+﻿@model ICollection<CameraListingServiceModel>
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<h1>@ViewData["Title"] Cameras</h1>
+
+
+@foreach (var camera in Model)
+{
+    <h2>@camera.Make</h2>
+    <h2>@camera.Model</h2>
+    <h2>@camera.Price</h2>
+    <h2>@camera.IsInStock</h2>
+    <h2>@camera.ImageUrl</h2>
+
+    <a href="/camera/details/@camera.Id">Details</a>
+
+}

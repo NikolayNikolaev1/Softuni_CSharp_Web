@@ -1,0 +1,20 @@
+﻿@model CameraDetailsServiceModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.Make @Model.Model - $@Model.Price - @Model.IsInStock</h1>
+<a href="/user/profile/@Model.UserId">@Model.UserName</a>
+
+<img src="@Model.ImageUrl" alt="@string.Concat(Model.Make, " ", Model.Model)" />
+
+<div>
+    <h3>@nameof(Model.IsFullFrame)</h3>
+    @(Model.IsFullFrame == true ? "Yes" : "No")
+</div>
+
+<div>
+    <h3>Min Shutter Speed:</h3>
+    @Model.MinShutterSpeed
+</div>
