@@ -2,7 +2,6 @@
 {
     using Data.Enums;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     public class CameraDetailsServiceModel
     {
@@ -20,7 +19,6 @@
 
         public string ImageUrl { get; set; }
 
-        [Display(Name = "Full Frame")]
         public bool IsFullFrame { get; set; }
 
         public int MinShutterSpeed { get; set; }

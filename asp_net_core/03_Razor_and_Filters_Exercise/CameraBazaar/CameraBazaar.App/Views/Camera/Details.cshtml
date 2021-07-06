@@ -7,14 +7,48 @@
 <h1>@Model.Make @Model.Model - $@Model.Price - @Model.IsInStock</h1>
 <a href="/user/profile/@Model.UserId">@Model.UserName</a>
 
-<img src="@Model.ImageUrl" alt="@string.Concat(Model.Make, " ", Model.Model)" />
+<img src="@Model.ImageUrl" style="width:500px;" alt="@string.Concat(Model.Make, " ", Model.Model)" />
 
 <div>
-    <h3>@nameof(Model.IsFullFrame)</h3>
+    <h3>Is Full Frame: </h3>
     @(Model.IsFullFrame == true ? "Yes" : "No")
 </div>
 
 <div>
-    <h3>Min Shutter Speed:</h3>
-    @Model.MinShutterSpeed
+    <h3>Min Shuter Speed: </h3>
+    @Model.MinShutterSpeed"
 </div>
+
+<div>
+    <h3>Max Shuter Speed: </h3>
+    1/@Model.MaxShutterSpeed
+</div>
+
+<div>
+    <h3>Min ISO: </h3>
+    @if (Model.MinIso.Equals("ISO50"))
+    {
+        @: 50
+    }
+    else if (Model.MinIso.Equals("ISO100"))
+    {
+        @: 100
+    }
+</div>
+
+<div>
+    <h3>Max ISO: </h3>
+    @Model.MaxIso
+</div>
+
+<div>
+    <h3>Video Resolution: </h3>
+    @Model.VideoResolution
+</div>
+
+<div>
+    <h3>Description: </h3>
+    @Model.Description
+</div>
+
+

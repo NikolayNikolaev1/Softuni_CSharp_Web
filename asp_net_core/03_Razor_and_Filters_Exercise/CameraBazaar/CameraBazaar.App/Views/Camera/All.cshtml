@@ -4,17 +4,53 @@
     ViewData["Title"] = "All";
 }
 
-<h1>@ViewData["Title"] Cameras</h1>
+
+<div class="container">
+    <h3>@ViewData["Title"] Cameras</h3>
+    <hr />
+
+    @foreach (var camera in Model)
+    {
+        string cameraName = string.Concat(camera.Make, " ", camera.Model);
+
+        <div class="border border-dark row">
+            <div class="row">
+                <img src="@camera.ImageUrl" alt="@cameraName" class="img-thumbnail col-md-3 offset-md-1" />
+                <div class="col-md-3 offset-md-1">
+                    <div class="row">
+                        <h3>@cameraName</h3>
+                    </div>
 
 
-@foreach (var camera in Model)
-{
-    <h2>@camera.Make</h2>
-    <h2>@camera.Model</h2>
-    <h2>@camera.Price</h2>
-    <h2>@camera.IsInStock</h2>
-    <h2>@camera.ImageUrl</h2>
+                    <div class="row">
+                        <a href="/camera/details/@camera.Id">Details</a>
+                    </div>
+                </div>
 
-    <a href="/camera/details/@camera.Id">Details</a>
+                <div class="col-md-3 offset-md-1">
+                    <div class="row">
+                        $@camera.Price
+                    </div>
 
-}
+                    <div class="row">
+                        @if (camera.IsInStock)
+                        {
+                            <div class="text-success">
+                                IN STOCK
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-danger">
+                                OUT OF STOCK
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>
