@@ -4,45 +4,53 @@
     ViewData["Title"] = "All";
 }
 
-
 <div class="container">
-    <h3>@ViewData["Title"] Cameras</h3>
+    <h1>@ViewData["Title"] Cameras</h1>
     <hr />
 
     @foreach (var camera in Model)
     {
         string cameraName = string.Concat(camera.Make, " ", camera.Model);
 
-        <div class="border border-dark row">
-            <div class="row">
-                <img src="@camera.ImageUrl" alt="@cameraName" class="img-thumbnail col-md-3 offset-md-1" />
+        <div class="border border-dark mt-4 pb-4 pt-4 row">
+            <div class="row ">
                 <div class="col-md-3 offset-md-1">
-                    <div class="row">
-                        <h3>@cameraName</h3>
+                    <img src="@camera.ImageUrl" class="img-thumbnail" alt="@cameraName" />
+                </div>
+
+                <div class="col-md-3 offset-md-1 align-self-center">
+                    <div class="row align-items-start">
+                        <div class="col pb-5">
+                            <h3>@cameraName</h3>
+
+                        </div>
                     </div>
-
-
-                    <div class="row">
-                        <a href="/camera/details/@camera.Id">Details</a>
+                    <div class="row align-items-end">
+                        <div class="col pt-5">
+                            <h3>
+                                <a href="/camera/details/@camera.Id">Details</a>
+                            </h3>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-3 offset-md-1">
+                <div class="col-md-3 offset-md-1 align-self-center">
                     <div class="row">
-                        $@camera.Price
+                        <div class="col pb-5">
+                            <h3>$@camera.Price</h3>
+                        </div>
                     </div>
-
                     <div class="row">
                         @if (camera.IsInStock)
                         {
-                            <div class="text-success">
-                                IN STOCK
+                            <div class="col text-success pt-5">
+                                <h3>IN STOCK</h3>
                             </div>
                         }
                         else
                         {
-                            <div class="text-danger">
-                                OUT OF STOCK
+                            <div class="col text-danger pt-5">
+                                <h3>OUT OF STOCK</h3>
                             </div>
                         }
                     </div>

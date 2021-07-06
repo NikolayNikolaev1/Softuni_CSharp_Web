@@ -10,21 +10,23 @@
     {
         private readonly ICameraService cameras;
         private readonly IUserService users;
-        private readonly UserManager<User> userManager;
 
-        public UserController(ICameraService cameras, IUserService users, UserManager<User> userManager)
+        public UserController(ICameraService cameras, IUserService users)
         {
             this.cameras = cameras;
             this.users = users;
-            this.userManager = userManager;
         }
 
         public IActionResult Profile(string id)
         {
-            string userId = this.userManager.GetUserId(User);
+            var userModel = this.users.Profile(id);
 
-            var userModel = this.users.Profile(userId);
-            var cameraListModel = this.cameras.All(userId);
+            if (userModel == null)
+            {
+                return this.NotFound();
+            }
+
+            var cameraListModel = this.cameras.All(id);
 
             return this.View(new UserProfileViewModel
             { 

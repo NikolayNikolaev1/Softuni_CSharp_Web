@@ -1,6 +1,7 @@
 ﻿namespace CameraBazaar.App.Areas.Identity.Pages.Account
 {
     using Data.Models;
+    using Data.Validations.User;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
@@ -40,9 +41,8 @@
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [Username(nameof(Username))]
+            public string Username { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -77,7 +77,7 @@
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

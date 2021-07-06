@@ -24,6 +24,26 @@
 
         ICollection<CameraListingServiceModel> All(string userId = null);
 
-        CameraDetailsServiceModel Find(int id);
+        bool Delete(int id);
+
+        CameraDetailsServiceModel Details(int id);
+
+        bool Edit(
+            int id,
+            MakeType make,
+            string model,
+            decimal price,
+            int quantity,
+            int minShutterSpeed,
+            int maxShutterSpeed,
+            MinIsoType minIso,
+            int maxIso,
+            bool isFullFrame,
+            string videoResolution,
+            int lightMetering,
+            string description,
+            string imageUrl);
+
+        CameraFormServiceModel Find(int id);
     }
 }

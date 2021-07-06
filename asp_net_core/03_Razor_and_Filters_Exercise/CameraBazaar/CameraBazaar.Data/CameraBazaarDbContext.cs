@@ -4,7 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using Models;
 
-    public class CameraBazaarDbContext : IdentityDbContext
+    public class CameraBazaarDbContext : IdentityDbContext<User>
     {
         public DbSet<Camera> Cameras { get; set; }
 
@@ -13,13 +13,13 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             builder
                 .Entity<User>()
                 .HasMany(u => u.Cameras)
                 .WithOne(c => c.User)
                 .HasForeignKey(c => c.UserId);
-
-            base.OnModelCreating(builder);
         }
     }
 }

@@ -4,4 +4,184 @@
     ViewData["Title"] = "Profile";
 }
 
-<h2>@Model.UserInfo.Username</h2>
+<div class="container">
+
+    <div class="row">
+        <div class="col-auto">
+            <h2>@Model.UserInfo.Username</h2>
+        </div>
+
+        @if (User.Identity.Name.Equals(Model.UserInfo.Username))
+        {
+            <div class="col pl-0">
+                <a href="/user/edit/@Model.UserInfo.Id" class="btn-lg btn-primary">Edit Profile</a>
+            </div>
+        }
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-2 font-weight-bold text-right">
+            <h5>Email:</h5>
+        </div>
+
+        <div class="col-md-9">
+            @Model.UserInfo.Email
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 font-weight-bold text-right">
+            <h5>Phone:</h5>
+        </div>
+
+        <div class="col-md-9">
+            @Model.UserInfo.Phone
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 font-weight-bold text-right">
+            <h5>Cameras:</h5>
+        </div>
+
+        <div class="col-md-9">
+            @Model.UserInfo.CamerasInStockCount in stock / @Model.UserInfo.CamerasOutOfStockCount out of stock
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="container">
+        <h3>Cameras:</h3>
+        @if (Model.CameraList.Count == 0)
+        {
+            <p>The user is not selling any cameras. Go to <a href="/home/index">home page</a> to find more offers of other users.</p>
+        }
+        else
+        {
+            foreach (var camera in Model.CameraList)
+            {
+                string cameraName = string.Concat(camera.Make, " ", camera.Model);
+
+                <div id="row_@camera.Id" class="border border-dark mt-4 pb-4 pt-4 row">
+                    <div class="row ">
+                        <div class="col-md-2 offset-md-1">
+                            <img src="@camera.ImageUrl" class="img-thumbnail" alt="@cameraName" />
+                        </div>
+
+                        <div class="col-md-3 align-self-center">
+                            <div class="row align-items-start">
+                                <div class="col pb-3">
+                                    <h3>@cameraName</h3>
+
+                                </div>
+                            </div>
+                            <div class="row align-items-end">
+                                <div class="col pt-3">
+                                    <h3>
+                                        <a href="/camera/details/@camera.Id">Details</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3  align-self-center">
+                            <div class="row">
+                                <div class="col pb-3">
+                                    <h3>$@camera.Price</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if (camera.IsInStock)
+                                {
+                                    <div class="col text-success pt-3">
+                                        <h3>IN STOCK</h3>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col text-danger pt-3">
+                                        <h3>OUT OF STOCK</h3>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (User.Identity.Name.Equals(Model.UserInfo.Username))
+                        {
+                            <div class="col-md-3  align-self-center">
+                                <div class="row">
+                                    <div class="col pb-3">
+                                        <a href="/camera/edit/@camera.Id" class="col-6 btn btn-lg btn-primary">Edit</a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col pb-3">
+                                        <a href="#" onclick="ConfirmDelete(@camera.Id)" class="col-6 btn btn-lg btn-warning">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3 class="modal-title">Delete Camera</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to Remove this Camera?</h4>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-danger" onclick="deleteCamera()">Confirm</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@*hidden field for storing current employeeId*@
+<input type="hidden" id="hiddenCameraId" />
+
+@section scripts{
+    <script>
+        var ConfirmDelete = function (CameraId) {
+            $("#hiddenCameraId").val(CameraId);
+            $("#myModal").modal('show');
+        }
+
+        var deleteCamera = function () {
+            var cameraId = $("#hiddenCameraId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Camera/Delete/" + cameraId,
+                //data: { id: cameraId },
+                success: function (result) {
+                    $("#myModal").modal("hide");
+                    $("#row_" + cameraId).remove();
+                }
+            })
+        }
+    </script>
+}
+
+@*<a href="/camera/delete/@camera.Id" class="col-6 btn btn-lg btn-warning">Delete</a>*@

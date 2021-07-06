@@ -27,10 +27,12 @@
             return user
                 .Select(u => new UserProfileServiceModel
                 {
+                    Id = u.Id,
                     Username = u.UserName,
                     Email = u.Email,
                     Phone = u.PhoneNumber,
-                    //CamerasInStockCount = 
+                    CamerasInStockCount = u.Cameras.Where(c => c.Quantity > 0).Count(),
+                    CamerasOutOfStockCount = u.Cameras.Where(c => c.Quantity == 0).Count()
                 }).FirstOrDefault();
         }
     }

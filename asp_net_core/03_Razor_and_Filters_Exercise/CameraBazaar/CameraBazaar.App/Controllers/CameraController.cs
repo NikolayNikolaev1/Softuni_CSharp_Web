@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Models.Camera;
     using Services;
+    using Services.Models.Camera;
     using System.Linq;
 
     public class CameraController : Controller
@@ -53,9 +54,22 @@
         public IActionResult All()
             => this.View(this.cameras.All());
 
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            bool isDeleted = this.cameras.Delete(id);
+
+            if (!isDeleted)
+            {
+                return this.NotFound();
+            }
+
+            return this.Redirect($"/user/profile/{this.userManager.GetUserId(User)}");
+        }
+
         public IActionResult Details(int id)
         {
-            var cameraModel =  this.cameras.Find(id);
+            CameraDetailsServiceModel cameraModel =  this.cameras.Details(id);
 
             if (cameraModel == null)
             {
@@ -63,6 +77,46 @@
             }
 
             return this.View(cameraModel);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            CameraFormServiceModel cameraModel = this.cameras.Find(id);
+
+            if (cameraModel == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(cameraModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, CameraFormServiceModel formModel)
+        {
+            bool isEdited = this.cameras
+                .Edit(
+                formModel.Id,
+                formModel.Make,
+                formModel.Model,
+                formModel.Price,
+                formModel.Quantity,
+                formModel.MinShutterSpeed,
+                formModel.MaxShutterSpeed,
+                formModel.MinIso,
+                formModel.MaxIso,
+                formModel.IsFullFrame,
+                formModel.VideoResolution,
+                formModel.LightMetering.Cast<int>().Sum(),
+                formModel.Description,
+                formModel.ImageUrl);
+
+            if (!isEdited)
+            {
+                return this.NotFound();
+            }
+
+            return this.Redirect($"/user/profile/{this.userManager.GetUserId(User)}");
         }
     }
 }
