@@ -69,11 +69,13 @@
         <div class="form-group row">
             <label asp-for="LightMetering" class="control-label col-md-4 text-right font-weight-bold"></label>
             <div>
-                <input type="checkbox" name="LightMetering" value="@((int)LightMeteringType.Spot)" /> Spot
-                <input type="checkbox" name="LightMetering" value="@((int)LightMeteringType.CenterWeighted)" /> Center-Weighted
-                <input type="checkbox" name="LightMetering" value="@((int)LightMeteringType.Evaluative)" /> Evaluative
+                @* Unnecessary collection but working. Need to refactor service model *@
+                <input checked="@(Model.LightMetering != null && Model.LightMetering.FirstOrDefault().ToString().Contains("Spot"))" type="checkbox" name="LightMetering" value="@((int)LightMeteringType.Spot)" /> Spot
+                <input checked="@(Model.LightMetering != null && Model.LightMetering.FirstOrDefault().ToString().Contains("CenterWeighted"))" type="checkbox" name="LightMetering" value="@((int)LightMeteringType.CenterWeighted)" /> Center-Weighted
+                <input checked="@(Model.LightMetering != null && Model.LightMetering.FirstOrDefault().ToString().Contains("Evaluative"))" type="checkbox" name="LightMetering" value="@((int)LightMeteringType.Evaluative)" /> Evaluative
                 <span asp-validation-for="LightMetering" class="text-danger offset-md-4"></span>
             </div>
+
         </div>
         <div class="form-group row">
             <label asp-for="Description" class="control-label col-md-4 text-right font-weight-bold"></label>

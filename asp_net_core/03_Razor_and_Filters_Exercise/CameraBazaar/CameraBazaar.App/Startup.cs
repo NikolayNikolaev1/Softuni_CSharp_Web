@@ -3,6 +3,7 @@ namespace CameraBazaar.App
     using Data;
     using Data.Models;
     using Infrastructure.Extensions;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,11 @@ namespace CameraBazaar.App
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<LogAttribute>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

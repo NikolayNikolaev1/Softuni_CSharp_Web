@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model ICollection<CameraListingServiceModel>
+
+
+@foreach (var camera in Model)
+{
+    string cameraName = string.Concat(camera.Make, " ", camera.Model);
+
+    <div id="row_@camera.Id" class="border border-dark mt-4 pb-4 pt-4 row">
+        <div class="row ">
+            <div class="col-md-2 offset-md-1">
+                <img src="@camera.ImageUrl" class="img-thumbnail" alt="@cameraName" />
+            </div>
+
+            <div class="col-md-3 align-self-center">
+                <div class="row align-items-start">
+                    <div class="col pb-3">
+                        <h3>@cameraName</h3>
+
+                    </div>
+                </div>
+                <div class="row align-items-end">
+                    <div class="col pt-3">
+                        <h3>
+                            <a href="/camera/details/@camera.Id">Details</a>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3  align-self-center">
+                <div class="row">
+                    <div class="col pb-3">
+                        <h3>$@camera.Price</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    @if (camera.IsInStock)
+                    {
+                        <div class="col text-success pt-3">
+                            <h3>IN STOCK</h3>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col text-danger pt-3">
+                            <h3>OUT OF STOCK</h3>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                var userId = Context.Request.RouteValues["id"];
+
+                @if (userId != null &&
+                    UserManager.GetUserId(User).Equals(userId))
+                {
+                    <div class="col-md-3  align-self-center">
+                        <div class="row">
+                            <div class="col pb-3">
+                                <a href="/camera/edit/@camera.Id" class="col-6 btn btn-lg btn-primary">Edit</a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col pb-3">
+                                <a href="#" onclick="ConfirmDelete(@camera.Id)" class="col-6 btn btn-lg btn-warning">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+        </div>
+
+    </div>
+}

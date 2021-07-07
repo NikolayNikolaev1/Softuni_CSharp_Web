@@ -31,7 +31,7 @@
 
         public string VideoResolution { get; set; }
 
-        public ICollection<LightMeteringType> LightMetering { get; set; }
+        public LightMeteringType LightMetering { get; set; }
 
         public string Description { get; set; }
     }

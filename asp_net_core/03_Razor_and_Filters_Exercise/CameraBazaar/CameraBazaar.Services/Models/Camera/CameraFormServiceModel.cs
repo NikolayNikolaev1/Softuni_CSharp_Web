@@ -1,7 +1,7 @@
 ﻿namespace CameraBazaar.Services.Models.Camera
 {
+    using CameraBazaar.Data.Validations.Camera;
     using Data.Enums;
-    using Data.Validations.Camera;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -56,6 +56,8 @@
         public string VideoResolution { get; set; }
 
         [Display(Name = "Light Metering")]
+        [LightMetering]
+        [Required(ErrorMessage = ErrorMessages.EmptyField)]
         public ICollection<LightMeteringType> LightMetering { get; set; }
 
         [MaxLength(DescriptionMaxLength, ErrorMessage = ErrorMessages.Camera.InvalidDescription)]

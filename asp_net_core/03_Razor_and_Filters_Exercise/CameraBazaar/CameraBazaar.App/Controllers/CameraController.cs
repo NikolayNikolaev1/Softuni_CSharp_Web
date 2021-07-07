@@ -1,6 +1,7 @@
 ﻿namespace CameraBazaar.App.Controllers
 {
     using Data.Models;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@
 
         [Authorize]
         [HttpPost]
+        [MeasureTime]
         public IActionResult Add(AddCameraFormModel formModel)
         {
             if (!ModelState.IsValid)
@@ -94,6 +96,11 @@
         [HttpPost]
         public IActionResult Edit(int id, CameraFormServiceModel formModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.View(formModel);
+            }
+
             bool isEdited = this.cameras
                 .Edit(
                 formModel.Id,

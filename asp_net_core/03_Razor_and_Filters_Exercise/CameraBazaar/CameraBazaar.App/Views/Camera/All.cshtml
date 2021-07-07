@@ -8,57 +8,6 @@
     <h1>@ViewData["Title"] Cameras</h1>
     <hr />
 
-    @foreach (var camera in Model)
-    {
-        string cameraName = string.Concat(camera.Make, " ", camera.Model);
-
-        <div class="border border-dark mt-4 pb-4 pt-4 row">
-            <div class="row ">
-                <div class="col-md-3 offset-md-1">
-                    <img src="@camera.ImageUrl" class="img-thumbnail" alt="@cameraName" />
-                </div>
-
-                <div class="col-md-3 offset-md-1 align-self-center">
-                    <div class="row align-items-start">
-                        <div class="col pb-5">
-                            <h3>@cameraName</h3>
-
-                        </div>
-                    </div>
-                    <div class="row align-items-end">
-                        <div class="col pt-5">
-                            <h3>
-                                <a href="/camera/details/@camera.Id">Details</a>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 offset-md-1 align-self-center">
-                    <div class="row">
-                        <div class="col pb-5">
-                            <h3>$@camera.Price</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        @if (camera.IsInStock)
-                        {
-                            <div class="col text-success pt-5">
-                                <h3>IN STOCK</h3>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col text-danger pt-5">
-                                <h3>OUT OF STOCK</h3>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    }
+    @await Html.PartialAsync("../Shared/_CameraListPartial", Model)
 
 </div>

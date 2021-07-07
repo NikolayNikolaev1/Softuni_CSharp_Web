@@ -4,6 +4,7 @@
     using Data.Enums;
     using Data.Models;
     using Models.Camera;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -124,6 +125,7 @@
                     MinIso = c.MinIso,
                     MaxIso = c.MaxIso,
                     VideoResolution = c.VideoResolution,
+                    LightMetering = c.LightMetering,
                     Description = c.Description
                 }).FirstOrDefault();
         }
@@ -197,6 +199,8 @@
                     MinIso = c.MinIso,
                     MaxIso = c.MaxIso,
                     VideoResolution = c.VideoResolution,
+                    // Very bad logic, but it works for now. Have to remove the need of collection for the falg enums.
+                    LightMetering = new List<LightMeteringType> { c.LightMetering },
                     Description = c.Description,
                 }).FirstOrDefault();
         }

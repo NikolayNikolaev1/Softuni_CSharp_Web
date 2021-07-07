@@ -17,9 +17,22 @@
         {
             @if (User.Identity.Name.Equals(Model.UserInfo.Username))
             {
-                <div class="col pl-0">
+                <div class="col-auto pl-0">
                     <a class="btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Index">Edit Profile</a>
                 </div>
+
+                @if (Model.UserInfo.LastLoginTime == null)
+                {
+                    <div class="col pl-0">
+                        <p>First log in</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="col pl-0">
+                        <p>Last Login: @(Model.UserInfo.LastLoginTime.ToString())</p>
+                    </div>
+                }
             }
 
         }
@@ -67,7 +80,9 @@
         }
         else
         {
-            foreach (var camera in Model.CameraList)
+            @await Html.PartialAsync("../Shared/_CameraListPartial", Model.CameraList)
+
+            @*foreach (var camera in Model.CameraList)
             {
                 string cameraName = string.Concat(camera.Make, " ", camera.Model);
 
@@ -139,7 +154,7 @@
                     </div>
 
                 </div>
-            }
+            }*@
         }
     </div>
 </div>
@@ -194,5 +209,3 @@
         }
     </script>
 }
-
-@*<a href="/camera/delete/@camera.Id" class="col-6 btn btn-lg btn-warning">Delete</a>*@

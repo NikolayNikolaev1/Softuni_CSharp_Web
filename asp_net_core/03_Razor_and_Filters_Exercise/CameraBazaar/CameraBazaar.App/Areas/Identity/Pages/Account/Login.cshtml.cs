@@ -2,6 +2,7 @@
 {
     using Data.Models;
     using Data.Validations.User;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
@@ -12,21 +13,27 @@
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Threading.Tasks;
+    using CameraBazaar.Services;
+    using System.Security.Claims;
 
     [AllowAnonymous]
+    [MeasureTime]
     public class LoginModel : PageModel
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IUserService userService;
 
         public LoginModel(SignInManager<User> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            this.userService = userService;
         }
 
         [BindProperty]
@@ -80,6 +87,7 @@
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    this.userService.SetLastLoginTime(Input.Username);
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

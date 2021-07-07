@@ -106,6 +106,28 @@
 
     <div class="row">
         <div class="col-md-3 font-weight-bold text-right">
+            <h5>Light Metering:</h5>
+        </div>
+
+        <div class="col-md-9">
+            @{
+                var lightMeterings = Model.LightMetering.ToString().Split(", ");
+
+                foreach (var lightMetering in lightMeterings)
+                {
+                    <div class="row">
+                        <div class="col">
+                            - @lightMetering
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 font-weight-bold text-right">
             <h5>Description:</h5>
         </div>
 

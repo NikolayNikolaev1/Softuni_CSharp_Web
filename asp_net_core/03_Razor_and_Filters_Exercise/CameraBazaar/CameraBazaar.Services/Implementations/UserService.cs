@@ -2,6 +2,7 @@
 {
     using Data;
     using Models.User;
+    using System;
     using System.Linq;
 
     public class UserService : IUserService
@@ -32,8 +33,18 @@
                     Email = u.Email,
                     Phone = u.PhoneNumber,
                     CamerasInStockCount = u.Cameras.Where(c => c.Quantity > 0).Count(),
-                    CamerasOutOfStockCount = u.Cameras.Where(c => c.Quantity == 0).Count()
+                    CamerasOutOfStockCount = u.Cameras.Where(c => c.Quantity == 0).Count(),
+                    LastLoginTime = u.LastLoginTime
                 }).FirstOrDefault();
+        }
+
+        public void SetLastLoginTime(string username)
+        {
+            this.dbContext
+                .Users
+                .FirstOrDefault(u => u.UserName.Equals(username))
+                .LastLoginTime = DateTime.UtcNow;
+            this.dbContext.SaveChanges();
         }
     }
 }
