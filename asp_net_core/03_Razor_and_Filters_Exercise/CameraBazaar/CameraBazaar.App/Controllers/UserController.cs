@@ -1,11 +1,11 @@
 ﻿namespace CameraBazaar.App.Controllers
 {
-    using Data.Models;
-    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Models.User;
     using Services;
 
+    [Authorize]
     public class UserController : Controller
     {
         private readonly ICameraService cameras;

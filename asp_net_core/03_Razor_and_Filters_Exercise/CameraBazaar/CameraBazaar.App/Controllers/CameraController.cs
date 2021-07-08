@@ -10,21 +10,32 @@
     using Services.Models.Camera;
     using System.Linq;
 
+    [Authorize]
     public class CameraController : Controller
     {
         private readonly ICameraService cameras;
+        private readonly IUserService users;
         private readonly UserManager<User> userManager;
 
-        public CameraController(ICameraService cameras, UserManager<User> userManager)
+        public CameraController(ICameraService cameras, IUserService users, UserManager<User> userManager)
         {
             this.cameras = cameras;
+            this.users = users;
             this.userManager = userManager;
         }
 
-        [Authorize]
-        public IActionResult Add() => this.View();
+        public IActionResult Add()
+        {
+            string userId = this.userManager.GetUserId(User);
 
-        [Authorize]
+            if (this.users.IsRestrict(userId))
+            {
+                return this.RedirectToAction("AccessDenied", "Home");
+            }
+
+            return this.View();
+        }
+
         [HttpPost]
         [MeasureTime]
         public IActionResult Add(AddCameraFormModel formModel)
@@ -53,6 +64,7 @@
             return this.RedirectToAction(nameof(All));
         }
 
+        [AllowAnonymous]
         public IActionResult All()
             => this.View(this.cameras.All());
 
@@ -69,6 +81,7 @@
             return this.Redirect($"/user/profile/{this.userManager.GetUserId(User)}");
         }
 
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             CameraDetailsServiceModel cameraModel =  this.cameras.Details(id);

@@ -8,6 +8,8 @@
     {
         public DateTime? LastLoginTime { get; set; }
 
+        public bool IsRestrict { get; set; }
+
         public ICollection<Camera> Cameras { get; set; } = new List<Camera>();
     }
 }

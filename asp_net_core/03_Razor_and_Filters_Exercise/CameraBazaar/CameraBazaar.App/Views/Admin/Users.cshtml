@@ -1,0 +1,33 @@
+﻿@model ICollection<UserListingServiceModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Camera Create Restriction</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Username</td>
+            <td>@user.Email</td>
+            @if (user.IsRestrict)
+            {
+                <td>
+                    <a href="/Admin/Allow/@user.Id" class="btn btn-lg btn-success">Allow</a>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <a href="/Admin/Restrict/@user.Id" class="btn btn-group-lg btn-danger">Restrict</a>
+                </td>
+
+            }
+        </tr>
+    }
+</table>

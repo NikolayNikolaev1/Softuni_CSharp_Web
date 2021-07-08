@@ -2,7 +2,13 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<a class="border-dark font-weight-bold nav-link text-dark list-group-item list-group-item-action " asp-area="" asp-controller="Camera" asp-action="All">All Cameras</a>
+@if (User.IsInRole("Administrator"))
+{
+    <a class="border-dark font-weight-bold nav-link text-dark list-group-item list-group-item-action " asp-controller="Admin" asp-action="Users">All Users</a>
+
+}
+
+<a class="border-dark font-weight-bold nav-link text-dark list-group-item list-group-item-action " asp-controller="Camera" asp-action="All">All Cameras</a>
 
 @if (SignInManager.IsSignedIn(User))
 {

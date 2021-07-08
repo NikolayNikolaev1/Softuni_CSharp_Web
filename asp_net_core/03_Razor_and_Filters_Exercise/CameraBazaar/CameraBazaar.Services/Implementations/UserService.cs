@@ -3,6 +3,7 @@
     using Data;
     using Models.User;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public class UserService : IUserService
@@ -13,6 +14,40 @@
         {
             this.dbContext = dbContext;
         }
+
+        public ICollection<UserListingServiceModel> All()
+            => this.dbContext
+            .Users
+            .Select(u => new UserListingServiceModel
+            {
+                Id = u.Id,
+                Username = u.UserName,
+                Email = u.Email,
+                IsRestrict = u.IsRestrict
+            }).ToList();
+
+        public bool Allow(string userId)
+        {
+            var user = this.dbContext
+                .Users
+                .Find(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.IsRestrict = false;
+            this.dbContext.SaveChanges();
+
+            return true;
+        }
+
+        public bool IsRestrict(string userId)
+            => this.dbContext
+            .Users
+            .Find(userId)
+            .IsRestrict;
 
         public UserProfileServiceModel Profile(string id)
         {
@@ -36,6 +71,23 @@
                     CamerasOutOfStockCount = u.Cameras.Where(c => c.Quantity == 0).Count(),
                     LastLoginTime = u.LastLoginTime
                 }).FirstOrDefault();
+        }
+
+        public bool Restrict(string userId)
+        {
+            var user = this.dbContext
+                .Users
+                .Find(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.IsRestrict = true;
+            this.dbContext.SaveChanges();
+
+            return true;
         }
 
         public void SetLastLoginTime(string username)
