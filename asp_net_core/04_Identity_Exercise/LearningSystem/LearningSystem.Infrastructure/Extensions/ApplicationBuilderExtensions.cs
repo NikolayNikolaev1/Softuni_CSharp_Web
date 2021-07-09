@@ -1,4 +1,4 @@
-﻿namespace LearningSystem.Web.Infrastructure.Extensions
+﻿namespace LearningSystem.Infrastructure.Extensions
 {
     using Data;
     using Data.Models;
@@ -8,7 +8,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using System.Threading.Tasks;
 
-    using static GlobalConstants;
+    using static Common.GlobalConstants;
 
     public static class ApplicationBuilderExtensions
     {

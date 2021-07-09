@@ -17,8 +17,8 @@
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
-    using static Data.Common.Constants.ErrorMessages;
-    using static Data.Common.Constants.Properties;
+    using static Common.GlobalConstants.ErrorMessages;
+    using static Common.GlobalConstants.Properties;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel

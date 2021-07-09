@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Services;
 
-    using static Infrastructure.GlobalConstants.Roles;
+    using static Common.GlobalConstants.Roles;
 
     [Area("Admin")]
     [Authorize(Administrator)]

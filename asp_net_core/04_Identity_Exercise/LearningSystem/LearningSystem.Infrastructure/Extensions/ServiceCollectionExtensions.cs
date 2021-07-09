@@ -1,7 +1,6 @@
-﻿namespace LearningSystem.Web.Infrastructure.Extensions
+﻿namespace LearningSystem.Infrastructure.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;
-    using Services;
     using System.Linq;
     using System.Reflection;
 
@@ -21,6 +20,8 @@
                 .ForEach(s => services.AddTransient(s.Interface, s.Implementation));
 
             return services;
+
         }
+        private interface IService { }
     }
 }

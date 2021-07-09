@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    using static Common.Constants.Properties;
+    using static Common.GlobalConstants.Properties;
 
     public class Course
     {
