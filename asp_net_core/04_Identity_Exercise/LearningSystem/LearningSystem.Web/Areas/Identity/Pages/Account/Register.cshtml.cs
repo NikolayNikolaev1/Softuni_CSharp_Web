@@ -72,6 +72,8 @@
 
             [Display(Name = "Date of Birth")]
             [Required]
+
+            [DataType(DataType.Date)]
             public DateTime BirthDate { get; set; }
         }
 

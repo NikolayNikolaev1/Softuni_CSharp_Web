@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LearningSystem.Services
+﻿namespace LearningSystem.Services
 {
+    using Models.Users;
+    using System.Collections.Generic;
+
     public interface IUserService
     {
-
+        ICollection<UserListingServiceModel> All();
     }
 }

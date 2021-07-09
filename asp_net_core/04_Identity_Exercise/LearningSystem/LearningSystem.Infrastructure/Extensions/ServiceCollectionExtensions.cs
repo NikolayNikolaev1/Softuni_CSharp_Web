@@ -9,19 +9,18 @@
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
             Assembly
-                .GetAssembly(typeof(IService))
+                .Load("LearningSystem.Services")
                 .GetTypes()
                 .Where(t => t.IsClass && t.GetInterfaces().Any(i => i.Name.Equals($"I{t.Name}")))
                 .Select(t => new
                 {
                     Interface = t.GetInterface($"I{t.Name}"),
                     Implementation = t
-                }).ToList()
+                })
+                .ToList()
                 .ForEach(s => services.AddTransient(s.Interface, s.Implementation));
 
             return services;
-
         }
-        private interface IService { }
     }
 }

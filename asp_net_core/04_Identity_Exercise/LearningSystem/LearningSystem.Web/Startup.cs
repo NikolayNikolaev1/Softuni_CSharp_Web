@@ -1,8 +1,10 @@
 namespace LearningSystem.Web
 {
+    using AutoMapper;
     using Data;
     using Data.Models;
     using Infrastructure.Extensions;
+    using LearningSystem.Infrastructure.Mapping;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -42,7 +44,8 @@ namespace LearningSystem.Web
             services.AddRazorPages();
 
             services.AddDomainServices();
-            //services.AddAutoMapper();
+            services.AddAutoMapper(typeof(AutoMapperProfile));
+
 
             services.AddMvc(options =>
             {

@@ -7,7 +7,7 @@
     using static Common.GlobalConstants.Roles;
 
     [Area("Admin")]
-    [Authorize(Administrator)]
+    [Authorize(Roles = Administrator)]
     public class UsersController : Controller
     {
         private readonly IUserService users;
@@ -19,7 +19,7 @@
 
         public IActionResult All()
         {
-            return View();
+            return View(this.users.All());
         }
     }
 }
