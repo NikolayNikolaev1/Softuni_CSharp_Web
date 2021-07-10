@@ -1,0 +1,21 @@
+﻿@model CourseDetailsServiceModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+    
+    <div class="row">
+        <div class="col-8">
+            <p>@Model.Description</p>
+        </div>
+        <div class="col-4">
+            @Model.StartDate.ToString("dd-MMMM-yyyy") - @Model.EndDate.ToString("dd-MMMM-yyyy")
+        </div>
+    </div>
+
+</div>
+
+

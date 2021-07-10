@@ -12,8 +12,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using static Common.GlobalConstants.ErrorMessages;
-    using static Common.GlobalConstants.Properties;
+    using static Common.WebConstants.ErrorMessages;
+    using static Common.DataConstants.Properties;
 
     [AllowAnonymous]
     public class LoginModel : PageModel

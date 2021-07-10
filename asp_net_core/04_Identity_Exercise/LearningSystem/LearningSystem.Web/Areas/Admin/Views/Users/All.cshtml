@@ -8,12 +8,21 @@
     <tr>
         <th>Username</th>
         <th>Email</th>
+        <th>Role</th>
     </tr>
     @foreach (var user in Model)
     {
         <tr>
             <td>@user.Username</td>
             <td>@user.Email</td>
+            <td>
+                @foreach (var course in user.Courses)
+                {
+                    <p>
+                        @course.Course.Name;
+                    </p>
+                }
+            </td>
         </tr>
     }
 </table>

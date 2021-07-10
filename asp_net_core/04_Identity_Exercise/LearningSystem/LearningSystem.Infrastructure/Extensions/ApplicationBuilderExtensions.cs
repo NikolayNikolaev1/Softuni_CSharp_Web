@@ -8,7 +8,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using System.Threading.Tasks;
 
-    using static Common.GlobalConstants;
+    using static Common.WebConstants;
 
     public static class ApplicationBuilderExtensions
     {
@@ -25,9 +25,9 @@
                 UserManager<User> userManager = serviceScope
                     .ServiceProvider
                     .GetService<UserManager<User>>();
-                RoleManager<IdentityRole> roleManager = serviceScope
+                RoleManager<Role> roleManager = serviceScope
                     .ServiceProvider
-                    .GetService<RoleManager<IdentityRole>>();
+                    .GetService<RoleManager<Role>>();
 
                 Task.Run(async () =>
                 {
@@ -45,14 +45,14 @@
 
         private static async Task CreateRoleAsync(
             UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<Role> roleManager,
             string roleName)
         {
             bool roleExists = await roleManager.RoleExistsAsync(roleName);
 
             if (!roleExists)
             {
-                await roleManager.CreateAsync(new IdentityRole
+                await roleManager.CreateAsync(new Role
                 {
                     Name = roleName
                 });
@@ -73,7 +73,8 @@
                 adminUser = new User
                 {
                     Email = AdminCredentials.Email,
-                    UserName = AdminCredentials.Username
+                    UserName = AdminCredentials.Username,
+                    Name = AdminCredentials.Username
                 };
 
                 await userManager.CreateAsync(adminUser, AdminCredentials.Password);

@@ -1,16 +1,11 @@
-﻿namespace LearningSystem.Web.Areas.Admin.Controllers
+﻿namespace LearningSystem.Web.Controllers
 {
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Models.Courses;
     using Services;
 
-    using static Common.WebConstants.Roles;
-
-    [Area("Admin")]
-    [Authorize(Roles = Administrator)]
     public class CourseController : Controller
     {
         private readonly ICourseService courses;
@@ -22,22 +17,22 @@
             this.userManager = userManager;
         }
 
-        public IActionResult Create() => View();
-
-        [HttpPost]
-        public IActionResult Create(CreateCourseFormModel formModel)
+        public IActionResult Details(int id)
         {
-            if (!ModelState.IsValid)
+            var serviceModel = this.courses.Details(id);
+
+            if (serviceModel == null)
             {
-                return View(formModel);
+                return NotFound();
             }
 
-            this.courses.Create(
-                formModel.Name,
-                formModel.Description,
-                this.userManager.GetUserId(User),
-                formModel.StartDate,
-                formModel.EndDate);
+            return View(serviceModel);
+        }
+
+        [Authorize]
+        public IActionResult Join(int id)
+        {
+            this.courses.Join(id, this.userManager.GetUserId(User));
 
             return RedirectToAction("Index", "Home");
         }

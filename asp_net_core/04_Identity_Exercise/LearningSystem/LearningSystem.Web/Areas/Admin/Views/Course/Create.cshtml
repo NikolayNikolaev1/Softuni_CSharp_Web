@@ -1,7 +1,41 @@
-﻿
+﻿@model CreateCourseFormModel
+
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>@ViewData["Title"] Course</h1>
+<div class="container">
+    <h1>@ViewData["Title"] Course</h1>
+    <hr />
 
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <label asp-for="Name" class="control-label col"></label>
+            <input asp-for="Name" class="form-control col" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Description" class="control-label col"></label>
+            <input asp-for="Description" class="form-control col" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <label asp-for="StartDate" class="control-label col"></label>
+            <input asp-for="StartDate" class="form-control col" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <label asp-for="EndDate" class="control-label col"></label>
+            <input asp-for="EndDate" class="form-control col" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <div class="form-group row">
+            <input type="submit" value="Create" class="btn-lg btn-primary col" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -37,14 +37,14 @@ namespace LearningSystem.Web
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequiredLength = 3;
-                }).AddRoles<IdentityRole>()
+                }).AddRoles<Role>()
                 .AddEntityFrameworkStores<LearningSystemDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
 
             services.AddDomainServices();
-            services.AddAutoMapper(typeof(AutoMapperProfile));
+            services.AddAutoMapper();
 
 
             services.AddMvc(options =>

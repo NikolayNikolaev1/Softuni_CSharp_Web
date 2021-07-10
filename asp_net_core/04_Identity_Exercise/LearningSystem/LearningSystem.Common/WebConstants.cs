@@ -1,6 +1,6 @@
 ﻿namespace LearningSystem.Common
 {
-    public static class GlobalConstants
+    public static class WebConstants
     {
         public static class AdminCredentials
         {
@@ -19,16 +19,6 @@
             public const string Administrator = "Administrator";
             public const string BlogAuthor = "Blog Author";
             public const string Trainer = "Trainer";
-        }
-
-        public static class Properties
-        {
-            public const int ArticleContentMaxLength = 300;
-            public const int ArticleTitleMaxLength = 50;
-            public const int CourseDescriptionMaxLength = 300;
-            public const int CourseNameMaxLength = 50;
-            public const int UserNameMaxLength = 50;
-            public const int UsernameMinLength = 3;
         }
     }
 }

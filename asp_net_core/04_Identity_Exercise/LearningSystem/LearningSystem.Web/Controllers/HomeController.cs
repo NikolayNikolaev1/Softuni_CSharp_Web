@@ -1,27 +1,24 @@
-﻿using LearningSystem.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace LearningSystem.Web.Controllers
+﻿namespace LearningSystem.Web.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using Models;
+    using Services;
+    using System.Diagnostics;
+
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly ICourseService courses;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICourseService courses)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.courses = courses;
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
+            => View(this.courses.All());
 
         public IActionResult Privacy()
         {

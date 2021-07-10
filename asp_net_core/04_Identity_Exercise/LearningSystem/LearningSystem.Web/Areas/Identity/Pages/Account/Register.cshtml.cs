@@ -17,8 +17,8 @@
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
-    using static Common.GlobalConstants.ErrorMessages;
-    using static Common.GlobalConstants.Properties;
+    using static Common.DataConstants.Properties;
+    using static Common.WebConstants.ErrorMessages;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
@@ -53,6 +53,12 @@
             [MinLength(UsernameMinLength, ErrorMessage = InvalidUserName)]
             [Required]
             public string Username { get; set; }
+
+
+            [MaxLength(UserNameMaxLength, ErrorMessage = InvalidUserName)]
+            [MinLength(UsernameMinLength, ErrorMessage = InvalidUserName)]
+            [Required]
+            public string Name { get; set; }
 
             [Required]
             [EmailAddress]
@@ -93,6 +99,7 @@
                 { 
                     UserName = Input.Username,
                     Email = Input.Email,
+                    Name = Input.Name,
                     BirthDate = Input.BirthDate
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

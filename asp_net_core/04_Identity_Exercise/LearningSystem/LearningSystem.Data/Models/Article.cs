@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
-    using static Common.GlobalConstants.Properties;
+    using static Common.DataConstants.Properties;
 
     public class Article
     {
