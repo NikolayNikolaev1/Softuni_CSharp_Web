@@ -14,6 +14,8 @@
 
         public DbSet<Article> Articles { get; set; }
 
+        public DbSet<StudentCourse> StudentCourses { get; set; }
+
         public LearningSystemDbContext(DbContextOptions<LearningSystemDbContext> options)
             : base(options) { }
 

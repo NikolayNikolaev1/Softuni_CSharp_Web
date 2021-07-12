@@ -1,4 +1,4 @@
-﻿@model ICollection<UserListingServiceModel>
+﻿@model UserListingViewModel
 
 @{
     ViewData["Title"] = "All";
@@ -8,20 +8,27 @@
     <tr>
         <th>Username</th>
         <th>Email</th>
-        <th>Role</th>
+        <th>Current Roles</th>
     </tr>
-    @foreach (var user in Model)
+    @foreach (var user in Model.Users)
     {
         <tr>
             <td>@user.Username</td>
             <td>@user.Email</td>
             <td>
-                @foreach (var course in user.Courses)
-                {
-                    <p>
-                        @course.Course.Name;
-                    </p>
-                }
+                <form asp-action="SetRoles">
+                    <input type="hidden" name="UserId" value="@user.Id"/>
+                    <div class="row">
+
+                    </div>
+                    <div class="col">
+                        @foreach (var role in Model.Roles)
+                        {
+                            <input checked="@user.RoleNames.Contains(role.Name)" type="checkbox" name="RoleIds" value="@role.Id" /> @role.Name
+                        }
+                        <input type="submit" value="Save" class="btn-primary" />
+                    </div>
+                </form>
             </td>
         </tr>
     }

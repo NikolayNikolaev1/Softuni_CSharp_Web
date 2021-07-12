@@ -81,7 +81,7 @@ namespace LearningSystem.Web
             {
 
                 endpoints.MapControllerRoute(
-                    name: "Admin",
+                    name: "area",
                     pattern: "{area:exists}/{controller}/{action}/{id?}");
 
                 endpoints.MapControllerRoute(

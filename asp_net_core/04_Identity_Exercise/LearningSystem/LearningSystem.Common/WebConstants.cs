@@ -17,8 +17,10 @@
         public static class Roles
         {
             public const string Administrator = "Administrator";
-            public const string BlogAuthor = "Blog Author";
+            public const string BlogAuthor = "BlogAuthor";
             public const string Trainer = "Trainer";
         }
+
+        public const string TempDataSuccessMessageKey = "SuccessMessage";
     }
 }

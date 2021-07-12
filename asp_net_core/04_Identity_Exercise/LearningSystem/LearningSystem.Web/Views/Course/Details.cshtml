@@ -1,21 +1,39 @@
-﻿@model CourseDetailsServiceModel
+﻿@model CourseDetailsViewModel
 
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = Model.CourseDetails.Name;
 }
 
 <div class="container">
     <h1>@ViewData["Title"]</h1>
-    
+    <h3>
+        Trainer: <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.CourseDetails.Trainer.Id">@Model.CourseDetails.Trainer.Name</a>
+    </h3>
+
     <div class="row">
         <div class="col-8">
-            <p>@Model.Description</p>
+            <p>@Model.CourseDetails.Description</p>
         </div>
         <div class="col-4">
-            @Model.StartDate.ToString("dd-MMMM-yyyy") - @Model.EndDate.ToString("dd-MMMM-yyyy")
+            @Model.CourseDetails.StartDate.ToString("dd-MMMM-yyyy") - @Model.CourseDetails.EndDate.ToString("dd-MMMM-yyyy")
+        </div>
+
+        <div class="row">
+            <div class="col-auto">
+                @if (Model.CourseDetails.StartDate > DateTime.Now)
+                {
+                    @if (Model.IsUserInCourse)
+                    {
+                        <a asp-controller="Course" asp-action="SignOut" asp-route-id="@Model.CourseDetails.Id" class="btn-lg btn-danger">Sign Out</a>
+                    }
+                    else
+                    {
+
+                        <a asp-controller="Course" asp-action="SignUp" asp-route-id="@Model.CourseDetails.Id" class="btn-lg btn-success">Sign Up</a>
+                    }
+                }
+            </div>
         </div>
     </div>
 
 </div>
-
-

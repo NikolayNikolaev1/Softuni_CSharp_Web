@@ -10,7 +10,7 @@
             <th>Name</th>
             <th>Start Date</th>
             <th>End Date</th>
-            <th>Action</th>
+            <th>Trainer</th>
         </tr>
         @foreach (var course in Model)
         {
@@ -20,21 +20,7 @@
                 </td>
                 <td>@course.StartDate.ToString("dd-MMMM-yyyy")</td>
                 <td>@course.EndDate.ToString("dd-MMMM-yyyy")</td>
-                @if (course.StartDate > DateTime.UtcNow)
-                {
-                    <td>
-                        <a asp-controller="Course" asp-action="Join" class="btn-lg btn-success">Join</a>
-                    </td>
-
-                }
-                else
-                {
-                    <td>
-                        <div class="text-danger">
-                            <h5>Started</h5>
-                        </div>
-                    </td>
-                }
+                <td>@course.TrainerName</td>
             </tr>
         }
     </table>

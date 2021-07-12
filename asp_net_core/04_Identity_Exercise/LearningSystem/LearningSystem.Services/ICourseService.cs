@@ -17,6 +17,10 @@
 
         CourseDetailsServiceModel Details(int id);
 
-        void Join(int courseId, string userId);
+        bool HasStudent(int courseId, string studentId);
+
+        bool SignOut(int courseId, string userId);
+
+        bool SignUp(int courseId, string userId);
     }
 }

@@ -6,5 +6,7 @@
     public interface IUserService
     {
         ICollection<UserListingServiceModel> All();
+
+        bool SetRoles(string userId, ICollection<string> roleIds);
     }
 }

@@ -60,22 +60,84 @@
                 .FirstOrDefault();
         }
 
-        public void Join(int courseId, string userId)
+        public bool HasStudent(int courseId, string studentId)
         {
-            var user = this.dbContext
+            User student = this.dbContext
                 .Users
-                .Find(userId);
-
-            this.dbContext
+                .Find(studentId);
+            Course course = this.dbContext
                 .Courses
-                .Find(courseId)
-                .Students
+                .Find(courseId);
+
+            if (student == null || course == null)
+            {
+                return false;
+            }
+
+            return this.dbContext
+                .Courses
+                .Any(c => c.Students
+                    .Any(s => s.StudentId == studentId));
+        }
+
+        public bool SignOut(int courseId, string studentId)
+        {
+            User user = this.dbContext
+                .Users
+                .Find(studentId);
+            Course course = this.dbContext
+                .Courses
+                .Find(courseId);
+
+            if (user == null || course == null)
+            {
+                return false;
+            }
+
+            if (!this.HasStudent(courseId, studentId))
+            {
+                return false;
+            }
+
+            if (course.StartDate >= DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            course.Students.Remove(this.dbContext.StudentCourses
+                .FirstOrDefault(sc => sc.CourseId == courseId && sc.StudentId == studentId));
+            this.dbContext.SaveChanges();
+            return true;
+        }
+
+        public bool SignUp(int courseId, string studentId)
+        {
+            User user = this.dbContext
+                .Users
+                .Find(studentId);
+            Course course = this.dbContext
+                .Courses
+                .Find(courseId);
+
+            if (user == null || course == null)
+            {
+                return false;
+            }
+
+            if (this.HasStudent(courseId, studentId))
+            {
+                return false;
+            }
+
+            course.Students
                 .Add(new StudentCourse
-                { 
-                    StudentId = userId
+                {
+                    StudentId = studentId
                 });
 
             this.dbContext.SaveChanges();
+            return true;
         }
+
     }
 }
